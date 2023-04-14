@@ -1,5 +1,5 @@
 <template>
-  <v-app class="app" dark>
+  <v-app class="app">
     <!-- <v-app-bar v-if="$route.name !== 'Login'"
       class="app-bar px-2"
       app
@@ -54,7 +54,6 @@
     >
       <div class="py-10 d-flex align-center">
         <img class="mr-3 ml-6" src="@/assets/img/logo.png" alt="logo" width="33px">
-        <img src="@/assets/img/text-vault.svg">
       </div>
       <v-list nav class="pa-0">
         <v-btn
@@ -74,17 +73,16 @@
         <v-list-item prepend-icon="mdi-account-supervisor-circle" title="Supervisors" value="supervisors"></v-list-item>
         <v-list-item prepend-icon="mdi-clock-start" title="Clock-in" value="clockin"></v-list-item>
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
 
     <v-main
       id="main"
-      :class="{'mt-15 pb-md-16 px-md-3 py-md-2 pa-0': $route.name !== 'Login',
-               'img-bg': $route.name !== 'Whitelist' && $route.name !== 'Authority'}"
+      :class="{'mt-15 pb-md-16 px-md-3 py-md-2 pa-0': $route.name !== 'Login'}"
     >
       <router-view />
     </v-main>
 
-    <loading :loadingShow="$store.state.loading.isShow" :content="$store.state.loading.text"></loading> -->
+    <!--<loading :loadingShow="$store.state.loading.isShow" :content="$store.state.loading.text"></loading> -->
   </v-app>
 </template>
 
@@ -218,125 +216,116 @@ export default {
 .app{
   cursor: default;
 }
-#main{
-  &.img-bg {
-    background: url('../src/assets/img/img-bg.svg') right 60px/cover no-repeat,
-                radial-gradient(circle at 90%, #888 0%, #444 20%, #333 50%, #000 80%);
-    background-blend-mode: multiply;
-    @include dai_vuetify_sm {
-      background: #313131;
-    }
-  }
-}
-.app-bar{
-  background: linear-gradient(117.82deg, #535353 1.27%, #000000 74.01%);
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  @include dai_vuetify_sm {
-    margin-left: 0;
-  }
-  .no-padding-btn{
-    .v-btn:not(.v-btn--round).v-size--default{
-      @include dai_vuetify_sm{
-        min-width: 40px;
-        padding: 0 10px;
-      }
-    }
-  }
-}
+#main{}
+// .app-bar{
+//   background: linear-gradient(117.82deg, #535353 1.27%, #000000 74.01%);
+//   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+//   @include dai_vuetify_sm {
+//     margin-left: 0;
+//   }
+//   .no-padding-btn{
+//     .v-btn:not(.v-btn--round).v-size--default{
+//       @include dai_vuetify_sm{
+//         min-width: 40px;
+//         padding: 0 10px;
+//       }
+//     }
+//   }
+// }
 
-.side-bar {
-  background-color: var(--v-darkGrey-base) !important;
-  z-index: 9;
-}
+// .side-bar {
+//   background-color: var(--v-darkGrey-base) !important;
+//   z-index: 9;
+// }
 
-#footer {
-  min-height: 60px;
-  border-radius: 6px;
-  border: #F0CD8F 1px solid;
-  width: 95%;
-  margin: 0 auto 20px;
-  img.footer-pointer {
-    position: absolute;
-    bottom: -1px;
-  }
-}
+// #footer {
+//   min-height: 60px;
+//   border-radius: 6px;
+//   border: #F0CD8F 1px solid;
+//   width: 95%;
+//   margin: 0 auto 20px;
+//   img.footer-pointer {
+//     position: absolute;
+//     bottom: -1px;
+//   }
+// }
 
-.v-input.grey--text {
-  input, .v-icon {
-    color: var(--v-grey-base) !important;
-    caret-color: var(--v-grey-base) !important;
-  }
-}
+// .v-input.grey--text {
+//   input, .v-icon {
+//     color: var(--v-grey-base) !important;
+//     caret-color: var(--v-grey-base) !important;
+//   }
+// }
 
-// analyze
-.analyze-details, .analyze-token, .analyze-index {
-  @include dai_vuetify_sm_min {
-    max-width: 420px;
-    background: radial-gradient(188.38% 188.38% at 50% -88.38%, rgba(99, 99, 99, 0.8) 0%, rgba(71, 71, 71, 0.8) 40.12%, rgba(49, 49, 49, 0.8) 100%);
-    border-radius: 11px;
-    margin: 40px auto;
-  }
+// // analyze
+// .analyze-details, .analyze-token, .analyze-index {
+//   @include dai_vuetify_sm_min {
+//     max-width: 420px;
+//     background: radial-gradient(188.38% 188.38% at 50% -88.38%, rgba(99, 99, 99, 0.8) 0%, rgba(71, 71, 71, 0.8) 40.12%, rgba(49, 49, 49, 0.8) 100%);
+//     border-radius: 11px;
+//     margin: 40px auto;
+//   }
 
-  .analyze-card {
-    background: #151515;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(3px);
-    border-radius: 5px;
-  }
+//   .analyze-card {
+//     background: #151515;
+//     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+//     backdrop-filter: blur(3px);
+//     border-radius: 5px;
+//   }
 
-  .v-tab {
-    min-width: 80px !important;
-  }
-  .v-tabs-items {
-    background-color: transparent !important;
-  }
+//   .v-tab {
+//     min-width: 80px !important;
+//   }
+//   .v-tabs-items {
+//     background-color: transparent !important;
+//   }
 
-  .date-select-wrap {
-    .v-input__prepend-outer {
-      margin-right: 0px;
-      margin-top: 15px;
-    }
-    .v-input__icon {
-      width: 18px;
-      height: 18px;
-      min-width: 18px;
-      .v-icon {
-        font-size: 18px;
-        color: var(--v-lightPrimary2-base);
-      }
-    }
-  }
+//   .date-select-wrap {
+//     .v-input__prepend-outer {
+//       margin-right: 0px;
+//       margin-top: 15px;
+//     }
+//     .v-input__icon {
+//       width: 18px;
+//       height: 18px;
+//       min-width: 18px;
+//       .v-icon {
+//         font-size: 18px;
+//         color: var(--v-lightPrimary2-base);
+//       }
+//     }
+//   }
 
-  .analyze-table .row {
-    border-bottom: #EBEBEB 1px solid !important;
-  }
-}
+//   .analyze-table .row {
+//     border-bottom: #EBEBEB 1px solid !important;
+//   }
+// }
 
-// common style
-.font-tauri {
-  font-family: 'Tauri' !important;
-}
-.font-share-tech {
-  font-family: 'Share Tech' !important;
-}
-.pre-wrap {
-  white-space: pre-wrap;
-}
-.break-all {
-  word-break: break-all;
-}
-.can-click{
-  cursor: pointer;
-}
-.bg-grey-radial-gradient {
-  background: radial-gradient(86.09% 216.62% at 8.7% 11.02%, #636363 0%, #232324 100%);
-}
-.bg-primary-radial-gradient {
-  background: radial-gradient(78.7% 198.02% at 8.7% 11.02%, #F0CD8F 0%, #C0914E 87.86%);
-}
-.border-radius-3{
-  border-radius: 3px;
-}
+// // common style
+// .font-tauri {
+//   font-family: 'Tauri' !important;
+// }
+// .font-share-tech {
+//   font-family: 'Share Tech' !important;
+// }
+// .pre-wrap {
+//   white-space: pre-wrap;
+// }
+// .break-all {
+//   word-break: break-all;
+// }
+// .can-click{
+//   cursor: pointer;
+// }
+// .bg-grey-radial-gradient {
+//   background: radial-gradient(86.09% 216.62% at 8.7% 11.02%, #636363 0%, #232324 100%);
+// }
+// .bg-primary-radial-gradient {
+//   background: radial-gradient(78.7% 198.02% at 8.7% 11.02%, #F0CD8F 0%, #C0914E 87.86%);
+// }
+// .border-radius-3{
+//   border-radius: 3px;
+// }
 .toasted.toasted-primary.error{
   background-color: var(--v-error-base) !important;
 }

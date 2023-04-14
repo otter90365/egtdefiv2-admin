@@ -8,18 +8,16 @@ Vue.use(VueAxios, axios);
 
 export default new Vuex.Store({
   state: {
-    // account: '',
-    // token: '',
-    // chainId: false,
+    account: '',
+    token: '',
+    chainId: false,
     // isEth: false,
     // locale: 'tw',
     // langs: ['tw'],
-    // nowWidth: 0,
+    nowWidth: 0,
     // rpcUrl: '',
-    // backendUrl: 'https://cfd.api-absolute-uv.com',
-    // backendAdminUrl: 'https://cfd.api-absolute-uv.com/admin',
-    // backendVersion: '/api/v1',
-    // backendAdminVersion: '/api/v1',
+    backendUrl: 'https://defi-v2.api-absolute-uv.com',
+    backendVersion: '/api/v1',
     // vaultAddress: '', // cd
     // version: 'staging',
     // isWhitelist: false,
@@ -44,34 +42,34 @@ export default new Vuex.Store({
     //   state.vaultAddress = contract.cd
     //   state.version = contract.version
     // },
-    // updateChainId(state, chainId){
-    //   state.chainId = chainId
-    // },
+    updateChainId(state, chainId){
+      state.chainId = chainId
+    },
     // updateIsEth(state, isEth){
     //   state.isEth = isEth
     // },
-    // // user data
-    // updateAccount(state, account){
-    //   state.account = account
-    // },
-    // updateToken(state, token){
-    //   state.token = token
-    // },
-    // updateUserInfo(state, userInfo){
-    //   state.userInfo = userInfo
-    // },
-    // clearInfo(state){
-    //   state.userInfo = {}
-		// 	state.account = ''
-		// 	state.token = ''
-    // },
+    // user data
+    updateAccount(state, account){
+      state.account = account
+    },
+    updateToken(state, token){
+      state.token = token
+    },
+    updateUserInfo(state, userInfo){
+      state.userInfo = userInfo
+    },
+    clearInfo(state){
+			state.userInfo = {}
+			state.account = ''
+			state.token = ''
+    },
     // // app data
     // updateLang(state, lang){
     //   state.locale = lang
     // },
-    // updateNowWidth(state, nowWidth){
-    //   state.nowWidth = nowWidth
-    // },
+    updateNowWidth(state, nowWidth){
+      state.nowWidth = nowWidth
+    },
     // updateDialog(state, data) {
     //   state.dialogShow = data
     // },
@@ -126,28 +124,30 @@ export default new Vuex.Store({
     //   commit('updateInterestTokens', interestTokens)
     //   commit('updateDepositTokens', depositTokens)
     // },
-    // // user data
-    // async login({ state, commit }, res){
-    //   let result = await Vue.axios.post(`${state.backendUrl}${state.backendVersion}/login`, res)
-    //   if (result.data.status === 675) {
-    //     Vue.toasted.error('帳號不存在')
-    //   } else if (result.data.status === 686) {
-    //     Vue.toasted.error('地址錯誤')
-    //   } else {
-    //     Vue.$cookies.set('token', result.data.data)
-    //     commit('updateToken', result.data.data)
-    //   }
+    // user data
+    async login({ state, commit }, res){
+      let result = await Vue.axios.post(`${state.backendUrl}${state.backendVersion}/login`, res)
+      if (result.data.status === 675) {
+        Vue.toasted.error('帳號不存在')
+      } else if (result.data.status === 686) {
+        Vue.toasted.error('地址錯誤')
+      } else if (result.data.status === 432) {
+        Vue.toasted.error('帳號或連接錢包地址錯誤')
+      } else {
+        Vue.$cookies.set('token', result.data.data)
+        commit('updateToken', result.data.data)
+      }
 
-    //   return result.data
-    // },
-    // async getUserInfo({ state, commit }){
-    //   let result = await Vue.axios.get(`${state.backendUrl}/admin${state.backendVersion}/admin_info`, {
-    //     headers: {
-    //       authorization: `Berear ${state.token}`
-    //     }
-    //   })
-    //   commit('updateUserInfo', result.data.data)
-    // },
+      return result.data
+    },
+    async getUserInfo({ state, commit }){
+      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/admin/info`, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      commit('updateUserInfo', result.data.data)
+    },
     // // whitelist
     // async getWhitelistList({ state }){
     //   let result = await Vue.axios.get(`${state.backendUrl}/admin${state.backendVersion}/white_list`, {

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import store from '../store'
+import store from '../store'
 // import app from '../main'
 import Toasted from 'vue-toasted';
 
@@ -20,21 +20,21 @@ Vue.use(Toasted, {
 });
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: () => import('../views/Home.vue'),
-  //   meta: {
-  //     requiresAuth: true,
-  //     auth: 0
-  //   },
-  // },
-  // {
-  //   path: '/login',
-  //   name: 'Login',
-  //   component: () => import('../views/Login.vue'),
-  //   meta: { requiresAuth: false },
-  // },
+  {
+    path: '/',
+    name: 'Home',
+    component: () => import('../views/Home.vue'),
+    meta: {
+      requiresAuth: true,
+      auth: 0
+    },
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue'),
+    meta: { requiresAuth: false },
+  },
   // {
   //   path: '/whitelist',
   //   name: 'Whitelist',
@@ -123,7 +123,7 @@ const router = new VueRouter({
   routes,
 })
 
-// router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   // // Get chain data if no data
   // try {
   //   await store.dispatch('getRpcUrl')
@@ -150,74 +150,72 @@ const router = new VueRouter({
   //   }
   // }
 
-  // // Get user info from cookies
-  // try{
-  //   let token = Vue.$cookies.get('token')
-  //   if (token != undefined) {
-  //     if ( store.state.token === '' ){
-  //       try{
-  //         store.commit('updateToken', token)
-  //         await store.dispatch('getUserInfo')
-  //       }catch(error){
-  //         console.log('error', error)
-  //         store.commit('clearInfo')
-  //         Vue.$cookies.remove('address')
-  //         Vue.$cookies.remove('token')
-  //         next({name: 'Login'});
-  //       }
-  //     }
-  //   }
-  // }catch(error){
-  //   console.log('error', error)
-  //   next();
-  // }
+  // Get user info from cookies
+  try{
+    let token = Vue.$cookies.get('token')
+    if (token != undefined) {
+      if ( store.state.token === '' ){
+        try{
+          store.commit('updateToken', token)
+          await store.dispatch('getUserInfo')
+        }catch(error){
+          console.log('error', error)
+          store.commit('clearInfo')
+          Vue.$cookies.remove('address')
+          Vue.$cookies.remove('token')
+          next({name: 'Login'});
+        }
+      }
+    }
+  }catch(error){
+    console.log('error', error)
+    next();
+  }
 
-  // // Get user info from cookies
-  // try{
-  //   let address = Vue.$cookies.get('address')
-  //   if (address != undefined) {
-  //     if ( store.state.account === '' ){
-  //       try{
-  //         store.commit('updateAccount', address)
-  //         // await store.dispatch('getIsWhitelist')
-  //         // await Vue.prototype.$vault.getIsMember()
-  //       }catch(error){
-  //         console.log('error', error)
-  //       }
-  //     }
-  //   }
-  // }catch(error){
-  //   console.log('error', error)
-  //   next();
-  // }
+  // Get user info from cookies
+  try{
+    let address = Vue.$cookies.get('address')
+    if (address != undefined) {
+      if ( store.state.account === '' ){
+        try{
+          store.commit('updateAccount', address)
+        }catch(error){
+          console.log('error', error)
+        }
+      }
+    }
+  }catch(error){
+    console.log('error', error)
+    next();
+  }
 
-  // // 如果 router 轉跳的頁面需要驗證 requiresAuth: true
-  // if (to.matched.some(record => {
-  //   // console.log(record.name, record.meta.requiresAuth);
-  //   return record.meta.requiresAuth;
-  // })) {
-  //   // 未登入
-  //   if (store.state.token === '' || store.state.account === ''){
-  //     try{
-  //       if (from.name !== 'Login') next({ name: 'Login' });
-  //       Vue.toasted.error('請先登入')
-  //     }catch(error){
-  //       console.log('error', error)
-  //     }
-  //   // 權限不足
-  //   } else if (!store.state.userInfo.permission.includes(to.matched[0].meta.auth)) {
-  //     next({name: 'noAuth'});
-  //   // // 未註冊
-  //   // } else if (!store.state.isMember) {
-  //   //   if (from.name !== 'Home') next({ name: 'Home', params: {lang: from.params.lang} });
-  //   //   store.commit('updateDialog', {isShow: true, type: 'register'})
-  //   } else {
-  //     next(); // 往下繼續執行
-  //   }
-  // } else {
-  //   next(); // 往下繼續執行
-  // }
-// });
+  // 如果 router 轉跳的頁面需要驗證 requiresAuth: true
+  if (to.matched.some(record => {
+    // console.log(record.name, record.meta.requiresAuth);
+    return record.meta.requiresAuth;
+  })) {
+    // 未登入
+    if (store.state.token === '' || store.state.account === ''){
+      try{
+        if (from.name !== 'Login') next({ name: 'Login' });
+        Vue.toasted.error('請先登入')
+      }catch(error){
+        console.log('error', error)
+      }
+    // 權限不足
+    } else if (!store.state.userInfo.permission.includes(to.matched[0].meta.auth)) {
+      next({name: 'noAuth'});
+    // // 未註冊
+    // } else if (!store.state.isMember) {
+    //   if (from.name !== 'Home') next({ name: 'Home', params: {lang: from.params.lang} });
+    //   store.commit('updateDialog', {isShow: true, type: 'register'})
+    } else {
+      next(); // 往下繼續執行
+    }
+  } else {
+    next(); // 往下繼續執行
+  }
+});
 
 // router.afterEach(async (to) => {
   
