@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-login white--text d-flex flex-md-row flex-column justify-center align-center pt-15">
+  <div class="primary admin-login white--text d-flex flex-md-row flex-column justify-center align-center pt-15">
     <div class="logo-block d-flex flex-md-row flex-column align-center">
       <img class="mr-5" src="@/assets/img/logo.png" alt="logo" width="100px">
       <div>
@@ -10,7 +10,7 @@
 
     <div class="login-block d-flex flex-column justify-center align-center w-full">
       <textField label="請輸入帳號" :inputText.sync="account" :rules="[dataRules]"></textField>
-      <btn :buttonText="'登入'" width="100%" color="#F1DDCD" @clickBtn="login()"></btn>
+      <btn :buttonText="'登入'" width="100%" color="lightOrange" @clickBtn="login()"></btn>
     </div>
   </div>
 </template>
@@ -66,7 +66,6 @@ export default {
 <style lang="scss">
 .admin-login {
   min-height: 100vh;
-  background: #382628;
   .logo-block {
     margin-right: 12%;
     @include dai_vuetify_md {

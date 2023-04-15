@@ -1,83 +1,63 @@
 <template>
   <v-app class="app">
-    <!-- <v-app-bar v-if="$route.name !== 'Login'"
-      class="app-bar px-2"
-      app
-      dark
-      color="darkGrey"
-      height="60"
-    >
-      desktop
-      <template v-if="$store.state.nowWidth > 960">
-        <div class="d-flex align-center can-click" @click="isDrawer = !isDrawer">
-          <v-img
-            class="mr-2"
-            src="@/assets/img/icon-menu.svg"
-          />
-        </div>
-
-        <v-spacer></v-spacer>
-
-        <div class="d-flex align-center">
-          <template v-if="$store.state.userInfo">
-            <div class="mr-10">管理者帳號 {{ $store.state.userInfo.account }}</div>
-          </template>
-          <btn class="no-padding-btn" isText :buttonText="$store.state.account? `${$store.state.nowWidth>960?`${shortAddress} 登出`:`登出`}` : `登入`" :color="'lightPrimary2'" @clickBtn="log()"></btn>
-        </div>
-      </template> -->
-
-      <!-- mobile
-      <template v-else>
-        <v-icon @click="$router.go(-1)">mdi-chevron-left</v-icon>
-
-        <v-spacer></v-spacer>
-
-        {{ currPageTitle }}
-
-        <v-spacer></v-spacer>
-
-        <div class="d-flex align-center can-click" @click="isDrawer = !isDrawer">
-          <v-img
-            class="mr-2"
-            src="@/assets/img/icon-menu.svg"
-          />
-        </div>
-      </template>
-    </v-app-bar>
-
     <v-navigation-drawer
+      v-if="$route.name !== 'Login'"
       class="side-bar"
       v-model="isDrawer"
+      dark
       fixed
-      temporary
-      width="200"
-    >
-      <div class="py-10 d-flex align-center">
-        <img class="mr-3 ml-6" src="@/assets/img/logo.png" alt="logo" width="33px">
-      </div>
-      <v-list nav class="pa-0">
-        <v-btn
+      :mini-variant.sync="sidebarClose"
+      width="245"
+      permanent
+      color="primary"
+    ><!--temporary-->
+      <v-list>
+        <v-list-item class="logo mx-2">
+          <v-list-item-icon>
+            <img src="@/assets/img/logo.png" alt="logo" width="35px">
+          </v-list-item-icon>
+          <v-list-item-title>
+            <div class="rem-0">Absolute DEFI</div>
+            <div class="rem-4">智能合約借貸應用</div>
+          </v-list-item-title>
+        </v-list-item>
+        <div
+          class="icon-expand rounded-circle d-flex justify-center align-center can-click"
+          :style="`background: ${currPage.color}`"
+          @click="sidebarClose = !sidebarClose"
+        >
+          <v-icon color="black">{{ sidebarClose ? 'mdi-chevron-right' : 'mdi-chevron-left'}}</v-icon>
+        </div>
+      </v-list>
+
+      <v-list
+        nav
+        dense
+        class="mt-md-8 mt-5"
+      >
+        <v-list-item
+          link
           v-for="nav in navList"
           :key="nav.link"
-          color="transparent"
-          depressed
-          tile
-          width="100%"
-          height="48"
-          class="white--text"
-          :to="`/${nav.link}`"
+          :style="{opacity: nav.link === $route.name ? 1 : 0.3}"
         >
-          {{ nav.text }}
-        </v-btn>
-        <v-list-item prepend-icon="mdi-email" title="Inbox" value="inbox"></v-list-item>
-        <v-list-item prepend-icon="mdi-account-supervisor-circle" title="Supervisors" value="supervisors"></v-list-item>
-        <v-list-item prepend-icon="mdi-clock-start" title="Clock-in" value="clockin"></v-list-item>
+          <v-list-item-icon>
+            <img :src="`${require(`@/assets/img/${nav.img}.svg`)}`" :alt="nav.text">
+          </v-list-item-icon>
+          <v-list-item-title class="rem-4 font-weight-bold">{{ nav.text }}</v-list-item-title>
+        </v-list-item>
       </v-list>
-    </v-navigation-drawer> -->
+      <div class="account-block white--text w-100 text-center d-md-none d-block" v-if="!sidebarClose">
+        <div class="font-weight-bold rem-12">{{ $store.state.userInfo.name }}</div>
+        <div class="font-weight-bold rem-2">管理員 {{ $store.state.userInfo.account }}</div>
+        
+        <v-btn class="rounded-lg mt-8" outlined color="lightOrange" height="25" @click="log()">登出</v-btn>
+      </div>
+    </v-navigation-drawer>
 
     <v-main
       id="main"
-      :class="{'mt-15 pb-md-16 px-md-3 py-md-2 pa-0': $route.name !== 'Login'}"
+      :class="{'ml-14 pb-md-16 px-md-3 py-md-2 pa-0': $route.name !== 'Login'}"
     >
       <router-view />
     </v-main>
@@ -95,23 +75,34 @@ export default {
   mixins: [base],
   data: () => ({
     isDrawer: false,
+    sidebarClose: true,
     navList: [
       {
         text: '白名單管理',
-        link: 'whitelist'
+        link: 'whitelist',
+        img: 'icon-nav-whitelist'
       },
       {
-        text: '戰情分析',
-        link: 'analyze'
+        text: '貸款中名單',
+        link: 'Order-Loaning',
+        img: 'icon-nav-loaning',
+        color: '#B5B68B',
+      },
+      {
+        text: '待媒合名單',
+        // link: '',
+        img: 'icon-nav-pending'
+      },
+      {
+        text: '已結單名單',
+        // link: '',
+        img: 'icon-nav-finished'
       },
       {
         text: '權限名單管理',
-        link: 'authority'
+        // link: 'authority',
+        img: 'icon-nav-authority'
       },
-      {
-        text: '利率參數設定',
-        link: 'rate-setting'
-      }
     ]
   }),
   components:{
@@ -122,12 +113,12 @@ export default {
     shortAddress(){
       return `${this.$store.state.account.slice(0, 6)}...${this.$store.state.account.slice(38)}`
     },
-    currPageTitle() {
-      let page = this.navList.find(item => (this.$route.path).includes(item.link))
+    currPage() {
+      let page = this.navList.find(item => (this.$route.name).includes(item.link))
       if (page) {
-        return page.text
+        return page
       } else {
-        return ''
+        return {}
       }
     }
   },
@@ -217,6 +208,35 @@ export default {
   cursor: default;
 }
 #main{}
+
+.side-bar {
+  position: fixed;
+  overflow: visible;
+  .logo {
+    padding: 30px 0;
+    border-bottom: #D9D9D9 solid 1px;
+    @include dai_vuetify_md {
+      padding: 20px 0;
+    }
+  }
+  .icon-expand {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    right: -15px;
+  }
+  .account-block {
+    position: absolute;
+    bottom: 50px;
+    @include dai_vuetify_sm {
+      bottom: 100px;
+    }
+  }
+}
+
+.v-navigation-drawer__border {
+  width: 0 !important;
+}
 // .app-bar{
 //   background: linear-gradient(117.82deg, #535353 1.27%, #000000 74.01%);
 //   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -301,22 +321,28 @@ export default {
 //   }
 // }
 
-// // common style
+// common style
 // .font-tauri {
 //   font-family: 'Tauri' !important;
 // }
 // .font-share-tech {
 //   font-family: 'Share Tech' !important;
 // }
-// .pre-wrap {
-//   white-space: pre-wrap;
-// }
-// .break-all {
-//   word-break: break-all;
-// }
-// .can-click{
-//   cursor: pointer;
-// }
+.pre-wrap {
+  white-space: pre-wrap;
+}
+.break-all {
+  word-break: break-all;
+}
+.can-click {
+  cursor: pointer;
+}
+.w-100 {
+  width: 100%;
+}
+.h-100 {
+  height: 100%;
+}
 // .bg-grey-radial-gradient {
 //   background: radial-gradient(86.09% 216.62% at 8.7% 11.02%, #636363 0%, #232324 100%);
 // }
