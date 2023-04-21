@@ -1,5 +1,5 @@
 <template>
-  <v-app class="app">
+  <v-app class="app" :class="$route.name">
     <v-navigation-drawer
       v-if="$route.name !== 'Login'"
       class="side-bar"
@@ -8,9 +8,10 @@
       fixed
       :mini-variant.sync="sidebarClose"
       width="245"
-      permanent
-      color="primary"
-    ><!--temporary-->
+      :permanent="$store.state.nowWidth >= 960"
+      :temporary="$store.state.nowWidth < 960"
+      :color="$vuetify.theme.themes.light.primary"
+    >
       <v-list>
         <v-list-item class="logo mx-2">
           <v-list-item-icon>
@@ -22,8 +23,7 @@
           </v-list-item-title>
         </v-list-item>
         <div
-          class="icon-expand rounded-circle d-flex justify-center align-center can-click"
-          :style="`background: ${currPage.color}`"
+          class="icon-expand lightPrimary rounded-circle d-none d-md-flex justify-center align-center can-click"
           @click="sidebarClose = !sidebarClose"
         >
           <v-icon color="black">{{ sidebarClose ? 'mdi-chevron-right' : 'mdi-chevron-left'}}</v-icon>
@@ -40,6 +40,7 @@
           v-for="nav in navList"
           :key="nav.link"
           :style="{opacity: nav.link === $route.name ? 1 : 0.3}"
+          @click="$router.push({name: nav.link})"
         >
           <v-list-item-icon>
             <img :src="`${require(`@/assets/img/${nav.img}.svg`)}`" :alt="nav.text">
@@ -57,7 +58,8 @@
 
     <v-main
       id="main"
-      :class="{'ml-14 pb-md-16 px-md-3 py-md-2 pa-0': $route.name !== 'Login'}"
+      :class="{'pb-md-16 px-md-15 py-5 px-5': $route.name !== 'Login', 
+               'ml-14': $route.name !== 'Login' && $store.state.nowWidth >= 960}"
     >
       <router-view />
     </v-main>
@@ -86,11 +88,10 @@ export default {
         text: '貸款中名單',
         link: 'Order-Loaning',
         img: 'icon-nav-loaning',
-        color: '#B5B68B',
       },
       {
-        text: '待媒合名單',
-        // link: '',
+        text: '未媒合名單',
+        link: 'Order-Pending',
         img: 'icon-nav-pending'
       },
       {
@@ -109,12 +110,20 @@ export default {
     // btn,
     // loading
   },
+  watch: {
+    isDrawer(newVal) {
+      this.$store.commit('updateSidebarClose', !newVal)
+    },
+    "$store.state.sidebarClose"(newVal) {
+      this.isDrawer = !newVal
+    },
+  },
   computed:{
     shortAddress(){
       return `${this.$store.state.account.slice(0, 6)}...${this.$store.state.account.slice(38)}`
     },
     currPage() {
-      let page = this.navList.find(item => (this.$route.name).includes(item.link))
+      let page = this.navList.find(item => this.$route.name === item.link)
       if (page) {
         return page
       } else {
@@ -157,6 +166,10 @@ export default {
     this.$store.commit('updateNowWidth', document.body.clientWidth)
     window.onresize = () => {
       this.$store.commit('updateNowWidth', document.body.clientWidth)
+    }
+
+    if (!this.$store.state.ethPrice) {
+      await this.$store.dispatch('getEthPrice')
     }
 
     if (window.ethereum){
@@ -234,9 +247,34 @@ export default {
   }
 }
 
+.header-block {
+  padding-bottom: 28px;
+  border-bottom: var(--v-darkPrimary1-base) solid 2px;
+}
+
+.title-text {
+  padding-bottom: 12px;
+  border-bottom: var(--v-lightPrimary-base) solid 2px;
+}
+
 .v-navigation-drawer__border {
   width: 0 !important;
 }
+
+// page color
+.Order-Loaning {
+  --v-primary-base: #86AE15 !important;
+  --v-lightPrimary-base: #B5B68B !important;
+  --v-darkPrimary1-base: #7D7F2D !important;
+  --v-darkPrimary2-base: #454915 !important;
+}
+.Order-Pending {
+  --v-primary-base: #718AD2 !important;
+  --v-lightPrimary-base: #C0C7DB !important;
+  --v-darkPrimary1-base: #164986 !important;
+  --v-darkPrimary2-base: #0C1829 !important;
+}
+
 // .app-bar{
 //   background: linear-gradient(117.82deg, #535353 1.27%, #000000 74.01%);
 //   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);

@@ -44,6 +44,25 @@ const routes = [
   //     auth: 1
   //   },
   // },
+  // order
+  {
+    path: '/order/loaning',
+    name: 'Order-Loaning',
+    component: () => import('../views/Order/Loaning.vue'),
+    meta: {
+      requiresAuth: true,
+      auth: 4
+    },
+  },
+  {
+    path: '/order/pending',
+    name: 'Order-Pending',
+    component: () => import('../views/Order/Pending.vue'),
+    meta: {
+      requiresAuth: true,
+      auth: 4
+    },
+  },
   // // analyze
   // {
   //   path: '/analyze',

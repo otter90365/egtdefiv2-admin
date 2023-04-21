@@ -1,0 +1,267 @@
+<template>
+  <div class="order-table">
+    <div class="d-none d-md-block">
+      <v-data-table
+        :headers="headers"
+        :items="currOrder"
+        :items-per-page="itemPerPage"
+        hide-default-footer
+        @click:row="clickRow"
+      >
+        <!-- header -->
+        <template v-slot:header.status="{}">
+          <inputBlock
+            mode="select"
+            label="狀態"
+            :selectItems="['進緩衝', '貸款中']"
+            width="67"
+          ></inputBlock>
+        </template>
+        <template v-slot:header.settle_day="{}">
+          <inputBlock
+            mode="select"
+            placeholder="到期日/時間"
+            :selectItems="['進緩衝', '貸款中']"
+            width="67"
+          ></inputBlock>
+        </template>
+        <template v-slot:header.countdown="{}">
+          <inputBlock
+            mode="select"
+            placeholder="倒數計時"
+            :selectItems="['進緩衝', '貸款中']"
+            width="67"
+          ></inputBlock>
+        </template>
+        <template v-slot:header.lender="{}">
+          <inputBlock
+            mode="select"
+            label="貸方"
+            :selectItems="lenderItems"
+            width="67"
+            :inputText.sync="lenderInput"
+          ></inputBlock>
+        </template>
+        <template v-slot:header.borrower="{}">
+          <inputBlock
+            mode="select"
+            label="借方"
+            :selectItems="borrowerItems"
+            width="67"
+            :inputText.sync="borrowerInput"
+          ></inputBlock>
+        </template>
+
+        <!-- item -->
+        <template v-slot:item.id="{item}">
+          <span class="lightPrimary--text">#{{ item.id }}</span>
+        </template>
+        <template v-slot:item.status="{}">
+        
+        </template>
+        <template v-slot:item.settle_day="{item}">
+          {{ timestampToTime(item.settle_day * 1000) }}
+        </template>
+        <template v-slot:item.want="{item}">
+          {{ item.want }} {{ basicToken.toUpperCase() }}
+        </template>
+        <template v-slot:item.rate="{item}">
+          {{ item.rate * 100 }}%
+        </template>
+        <template v-slot:item.amount="{item}">
+          {{ item.amount }} {{ borrowToken.toUpperCase() }}
+        </template>
+        <template v-slot:item.mortgageRate="{item}">
+          {{ (item.want / (item.amount * $store.state.ethPrice / 1000) * 100 ).toFixed(2) }}%
+        </template>
+      </v-data-table>
+    </div>
+
+    <v-row class="d-block d-md-none mobile-order py-1 px-2 mb-2 can-click" v-for="item in currOrder" :key="item.id" @click="clickRow(item)">
+      <v-row class="rem-0 font-weight-bold">
+        <v-col cols="2" class="lightPrimary--text">#{{ item.id }}</v-col>
+        <v-col cols="2">{{ item.pendingStatus }}</v-col>
+        <v-col cols="5" class="text-center">{{ '-' }}</v-col>
+        <v-col cols="3" class="text-center">{{ '-' }}</v-col>
+      </v-row>
+      <v-row no-gutters align="stretch">
+        <v-col cols="2" class="rem-0 pa-2">
+          <div>
+            <span class="mr-1">{{ item.borrower }}</span>
+            <span style="font-size: 8px">借方</span>
+          </div>
+          <div class="break-all">{{ item.borrower_address }}</div>
+        </v-col>
+        <v-col cols="4" class="pa-1">
+          <div class="lightPrimary px-1 h-100">
+            <div><span style="font-size: 8px">借款金額</span>  <span class="rem-2">{{ item.want }}</span> <span style="font-size: 10px;">{{ basicToken.toUpperCase() }}</span></div>
+            <div><span style="font-size: 8px">抵押數量</span>  <span class="rem-2">{{ item.amount }}</span> <span style="font-size: 10px;">{{ borrowToken.toUpperCase() }}</span></div>
+          </div>
+        </v-col>
+        <v-col cols="4" class="pa-1">
+          <div class="lightPrimary px-1 h-100">
+            <div><span style="font-size: 8px">利率</span>  <span class="rem-2">{{ item.rate * 100 }}</span> <span style="font-size: 10px;">%</span></div>
+            <div><span style="font-size: 8px">貸款成數</span>  <span class="rem-2">{{ (item.want / (item.amount * $store.state.ethPrice / 1000) * 100 ).toFixed(2) }}</span> <span style="font-size: 10px;">%</span></div>
+          </div>
+        </v-col>
+        <v-col cols="2" class="rem-0 pa-2">
+          <div>
+            <span class="mr-1">{{ item.lender || '-' }}</span>
+            <span style="font-size: 8px" v-if="item.lender">貸方</span>
+          </div>
+          <div class="break-all">{{ item.lender_address !== '0x0000000000000000000000000000000000000000' ? item.lender_address : '-' }}</div>
+        </v-col>
+      </v-row>
+    </v-row>
+
+    <v-pagination v-model="page" circle :length="totalPage" :total-visible="7"></v-pagination>
+
+    <!-- detailed info -->
+    <v-dialog v-model="detailsShow" fullscreen>
+      <div class="white detailed-info-card text-center">
+        <h2 class="font-weight-bold rem-8">
+          {{ currItem.pendingStatus ? currItem.pendingStatus
+          : $route.name.includes('Loaning') ? '貸款中' : '已結單'
+          }}名單細項
+        </h2>
+
+        <div class="py-5 status-block">
+          <div>#{{ currItem.id }}</div>
+          <div>{{ currItem.pendingStatus }}</div>
+          <div>-</div>
+          <div>-</div>
+        </div>
+
+        <div class="py-5 borrower-block">
+          <div>借方</div>
+          <div class="rem-20 font-weight-bold">{{ currItem.borrower }}</div>
+          <div class="rem-2 break-all">{{ currItem.borrower_address }}</div>
+          <div>借款金額  {{ currItem.want }} {{ basicToken.toUpperCase() }}</div>
+          <div>抵押數量  {{ currItem.amount }} {{ borrowToken.toUpperCase() }}</div>
+          <div>利率  {{ currItem.rate * 100 }}%</div>
+          <div>貸款成數  {{ (currItem.want / (currItem.amount * $store.state.ethPrice / 1000) * 100 ).toFixed(2) }}%</div>
+        </div>
+
+        <div class="py-5 lender-block">
+          <div>貸方</div>
+          <div class="rem-20 font-weight-bold">{{ currItem.lender || '-' }}</div>
+          <div class="rem-2 break-all">{{ currItem.lender_address !== '0x0000000000000000000000000000000000000000' ? currItem.lender_address : '-' }}</div>
+        </div>
+
+        <v-btn class="rounded-lg" color="darkPrimary1" dark depressed width="125" @click="detailsShow = false">關閉</v-btn>
+      </div>
+    </v-dialog>
+  </div>
+</template>
+
+<script>
+import base from '@/mixin/base'
+import inputBlock from '@/components/inputBlock'
+export default {
+  mixins: [base],
+  props: {
+    itemPerPage: {
+      type: Number,
+      default: 10
+    },
+    orders: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
+    headers: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
+    basicToken: String,
+    borrowToken: String,
+    // input items
+    lenderText: String,
+    lenderItems: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
+    borrowerText: String,
+    borrowerItems: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
+  },
+  data() {
+    return {
+      lenderInput: '',
+      borrowerInput: '',
+      page: 1,
+      detailsShow: false,
+      currItem: {}
+    }
+  },
+  watch: {
+    lenderInput(newVal) {
+      this.$emit('update:lenderText', newVal)
+    },
+    borrowerInput(newVal) {
+      this.$emit('update:borrowerText', newVal)
+    },
+    itemPerPage() {
+      this.page = 1
+      this.$forceUpdate()
+    }
+  },
+  components: {
+    inputBlock
+  },
+  computed: {
+    totalPage() {
+      return Math.ceil(this.orders.length / this.itemPerPage)
+    },
+    currOrder() {
+      return this.orders.slice(this.itemPerPage * (this.page - 1), this.itemPerPage * this.page)
+    }
+  },
+  methods: {
+    clickRow(item) {
+      this.detailsShow = true
+      this.currItem = item
+    }
+  },
+  mounted() {
+    this.lenderInput = this.lenderText
+    this.borrowerInput = this.borrowerText
+  }
+}
+</script>
+
+<style lang="scss">
+.order-table  {
+  th, td {
+    border-bottom: 2px solid var(--v-lightPrimary-base) !important;
+  }
+  .mobile-order {
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+  }
+}
+.detailed-info-card {
+  padding: 40px 80px;
+  h2 {
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--v-lightPrimary-base);
+  }
+  .status-block, .borrower-block, .lender-block {
+    div {
+      margin-bottom: 14px;
+    }
+    &:not(.lender-block){
+      border-bottom: 2px dashed var(--v-lightPrimary-base);
+    }
+  }
+}
+</style>

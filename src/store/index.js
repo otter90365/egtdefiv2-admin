@@ -32,6 +32,26 @@ export default new Vuex.Store({
     //   isShow: false,
     //   text: ''
     // },
+    tokenPairs: [
+      'EGT/TBT',
+      'EGT/USDT',
+    ],
+    currTokenPair: 'EGT/TBT',
+    pageItems: [
+      10,
+      20,
+      50,
+    ],
+    ethPrice: 0,
+    sidebarClose: true,
+  },
+  getters: {
+    basicToken(state) {
+      return state.currTokenPair.split('/')[1]
+    },
+    borrowToken(state) {
+      return state.currTokenPair.split('/')[0]
+    },
   },
   mutations: {
     // // chain data
@@ -82,6 +102,15 @@ export default new Vuex.Store({
     // updateDepositTokens(state, tokens){
     //   state.depositTokens = tokens
     // },
+    updateEthPrice(state, ethPrice){
+      state.ethPrice = ethPrice
+    },
+    updateSidebarClose(state, sidebarClose){
+      state.sidebarClose = sidebarClose
+    },
+    updateCurrTokenPair(state, currTokenPair){
+      state.currTokenPair = currTokenPair
+    },
   },
   actions: {
     // // chain data
@@ -248,10 +277,38 @@ export default new Vuex.Store({
     //   })
     //   return result.data
     // },
+    async getEthPrice({commit}){
+      try {
+        let result = await Vue.axios.get(`https://pro-api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&include_last_updated_at=true&x_cg_pro_api_key=CG-JC54SgmUabpyX94wxVDmLffX`)
+        commit('updateEthPrice', result.data.ethereum.usd)
+      } catch (error) {
+        commit('updateEthPrice', 0)
+      }
+    },
     // async getTokenPrice(_, data){
     //   let result = await Vue.axios.get(`https://pro-api.coingecko.com/api/v3/simple/price?ids=${data.token}&vs_currencies=${data.currency}&include_last_updated_at=true&x_cg_pro_api_key=CG-JC54SgmUabpyX94wxVDmLffX`)
     //   return result.data
     // },
+    async getLoaningOrder({state}, data){
+      const lender = data.lender ? `&lender=${data.lender}` : ''
+      const borrower = data.borrower ? `&borrower=${data.borrower}` : ''
+      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/order/ordering?basic_token=${data.basicToken.toLowerCase()}&borrow_token=${data.borrowToken.toLowerCase()}${lender}${borrower}`, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
+    async getPendingOrder({state}, data){
+      const lender = data.lender ? `&lender=${data.lender}` : ''
+      const borrower = data.borrower ? `&borrower=${data.borrower}` : ''
+      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/order/unmatched?basic_token=${data.basicToken.toLowerCase()}&borrow_token=${data.borrowToken.toLowerCase()}${lender}${borrower}`, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
   },
   modules: {}
 })

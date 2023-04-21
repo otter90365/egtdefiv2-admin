@@ -77,17 +77,17 @@ export default {
 //       let date = time.getDate()
 //       return `${year}-${month<10?`0${month}`:month}-${date<10?`0${date}`:date}`
 //     },
-//     timestampToTime(timestamp){
-//       let time = new Date(timestamp)
-//       let year = time.getFullYear()
-//       let month = time.getMonth() + 1
-//       let date = time.getDate()
-//       let hour = time.getHours()
-//       let min = time.getMinutes()
-//       let sec = time.getSeconds()
+    timestampToTime(timestamp){
+      let time = new Date(timestamp)
+      let year = time.getFullYear()
+      let month = time.getMonth() + 1
+      let date = time.getDate()
+      let hour = time.getHours()
+      let min = time.getMinutes()
+      let sec = time.getSeconds()
 
-//       return `${year}-${month<10?`0${month}`:month}-${date<10?`0${date}`:date} ${hour<10?`0${hour}`:hour}:${min<10?`0${min}`:min}:${sec<10?`0${sec}`:sec}`
-//     },
+      return `${year}-${month<10?`0${month}`:month}-${date<10?`0${date}`:date} ${hour<10?`0${hour}`:hour}:${min<10?`0${min}`:min}:${sec<10?`0${sec}`:sec}`
+    },
 //     timestampToFirstDayofMonth(timestamp){
 //       let time = new Date(timestamp)
 //       let year = time.getFullYear()
