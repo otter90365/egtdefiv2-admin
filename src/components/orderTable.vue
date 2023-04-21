@@ -235,11 +235,20 @@ export default {
     lenderInput(newVal) {
       this.$emit('update:lenderText', newVal)
     },
+    lenderText(newVal) {
+      this.lenderInput = newVal
+    },
     borrowerInput(newVal) {
       this.$emit('update:borrowerText', newVal)
     },
+    borrowerText(newVal) {
+      this.borrowerInput = newVal
+    },
     settleInput(newVal) {
       this.$emit('update:settleText', newVal)
+    },
+    settleText(newVal) {
+      this.settleInput = newVal
     },
     itemPerPage() {
       this.page = 1
