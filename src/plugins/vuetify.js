@@ -13,6 +13,8 @@ export default new Vuetify({
         darkPrimary1: '#513C3E',
         darkPrimary2: '#18242B',
         lightOrange: '#F1DDCD',
+        warning: '#CD4949',
+        lightWarning: '#EFCDD3',
         // lightPrimary1: '#F3E1C2',
         // lightPrimary2: '#F0CD8F',
         // grey: '#636363',

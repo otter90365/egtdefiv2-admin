@@ -96,7 +96,7 @@ export default {
       },
       {
         text: '已結單名單',
-        // link: '',
+        link: 'Order-Close',
         img: 'icon-nav-finished'
       },
       {
@@ -273,6 +273,12 @@ export default {
   --v-lightPrimary-base: #C0C7DB !important;
   --v-darkPrimary1-base: #164986 !important;
   --v-darkPrimary2-base: #0C1829 !important;
+}
+.Order-Close {
+  --v-primary-base: #773B8C !important;
+  --v-lightPrimary-base: #C4A9CD !important;
+  --v-darkPrimary1-base: #7D5C7C !important;
+  --v-darkPrimary2-base: #250E43 !important;
 }
 
 // .app-bar{

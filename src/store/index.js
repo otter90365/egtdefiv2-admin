@@ -309,6 +309,17 @@ export default new Vuex.Store({
       })
       return result.data
     },
+    async getCloseOrder({state}, data){
+      const lender = data.lender ? `&lender=${data.lender}` : ''
+      const borrower = data.borrower ? `&borrower=${data.borrower}` : ''
+      const settle = data.settle ? `&settle_status=${data.settle}` : ''
+      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/order/complete?basic_token=${data.basicToken.toLowerCase()}&borrow_token=${data.borrowToken.toLowerCase()}${lender}${borrower}${settle}`, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
   },
   modules: {}
 })

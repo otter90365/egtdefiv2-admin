@@ -63,6 +63,15 @@ const routes = [
       auth: 4
     },
   },
+  {
+    path: '/order/close',
+    name: 'Order-Close',
+    component: () => import('../views/Order/Close.vue'),
+    meta: {
+      requiresAuth: true,
+      auth: 4
+    },
+  },
   // // analyze
   // {
   //   path: '/analyze',

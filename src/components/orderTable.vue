@@ -7,6 +7,7 @@
         :items-per-page="itemPerPage"
         hide-default-footer
         @click:row="clickRow"
+        :item-class="(item) => item.settle === 2 ? 'warning--text' : ''"
       >
         <!-- header -->
         <template v-slot:header.status="{}">
@@ -14,6 +15,15 @@
             mode="select"
             label="狀態"
             :selectItems="['進緩衝', '貸款中']"
+            width="67"
+          ></inputBlock>
+        </template>
+        <template v-slot:header.settle="{}">
+          <inputBlock
+            mode="select"
+            label="狀態"
+            :selectItems="settleItems"
+            :inputText.sync="settleInput"
             width="67"
           ></inputBlock>
         </template>
@@ -54,10 +64,11 @@
 
         <!-- item -->
         <template v-slot:item.id="{item}">
-          <span class="lightPrimary--text">#{{ item.id }}</span>
+          <span :class="item.settle === 2 ? 'warning--text' : 'lightPrimary--text'">#{{ item.id }}</span>
         </template>
-        <template v-slot:item.status="{}">
-        
+        <template v-slot:item.settle="{item}">
+          <span>{{ item.settle === 2 ? '違約'
+                 : item.settle === 5 ? '已還款' : '' }}</span>
         </template>
         <template v-slot:item.settle_day="{item}">
           {{ timestampToTime(item.settle_day * 1000) }}
@@ -79,13 +90,18 @@
 
     <v-row class="d-block d-md-none mobile-order py-1 px-2 mb-2 can-click" v-for="item in currOrder" :key="item.id" @click="clickRow(item)">
       <v-row class="rem-0 font-weight-bold">
-        <v-col cols="2" class="lightPrimary--text">#{{ item.id }}</v-col>
-        <v-col cols="2">{{ item.pendingStatus }}</v-col>
-        <v-col cols="5" class="text-center">{{ '-' }}</v-col>
-        <v-col cols="3" class="text-center">{{ '-' }}</v-col>
+        <v-col cols="2">#{{ item.id }}</v-col>
+        <v-col cols="2" :class="{'warning--text': item.settle === 2}">
+          {{ item.pendingStatus ? item.pendingStatus
+           : item.settle === 2  ? '違約'
+           : item.settle === 5  ? '已還款' : ''
+          }}
+        </v-col>
+        <v-col cols="5" class="text-center" :class="{'warning--text': item.settle === 2}">{{ '-' }}</v-col>
+        <v-col cols="3" class="text-center" :class="{'warning--text': item.settle === 2}">{{ '-' }}</v-col>
       </v-row>
       <v-row no-gutters align="stretch">
-        <v-col cols="2" class="rem-0 pa-2">
+        <v-col cols="2" class="rem-0 pa-2" :class="{'warning--text': item.settle === 2}">
           <div>
             <span class="mr-1">{{ item.borrower }}</span>
             <span style="font-size: 8px">借方</span>
@@ -93,15 +109,15 @@
           <div class="break-all">{{ item.borrower_address }}</div>
         </v-col>
         <v-col cols="4" class="pa-1">
-          <div class="lightPrimary px-1 h-100">
-            <div><span style="font-size: 8px">借款金額</span>  <span class="rem-2">{{ item.want }}</span> <span style="font-size: 10px;">{{ basicToken.toUpperCase() }}</span></div>
-            <div><span style="font-size: 8px">抵押數量</span>  <span class="rem-2">{{ item.amount }}</span> <span style="font-size: 10px;">{{ borrowToken.toUpperCase() }}</span></div>
+          <div class="px-1 h-100" :class="item.settle === 2 ? 'lightWarning warning--text' : 'lightPrimary'">
+            <div><span style="font-size: 8px" class="black--text">借款金額</span>  <span class="rem-2">{{ item.want }}</span> <span style="font-size: 10px;">{{ basicToken.toUpperCase() }}</span></div>
+            <div><span style="font-size: 8px" class="black--text">抵押數量</span>  <span class="rem-2">{{ item.amount }}</span> <span style="font-size: 10px;">{{ borrowToken.toUpperCase() }}</span></div>
           </div>
         </v-col>
         <v-col cols="4" class="pa-1">
-          <div class="lightPrimary px-1 h-100">
-            <div><span style="font-size: 8px">利率</span>  <span class="rem-2">{{ item.rate * 100 }}</span> <span style="font-size: 10px;">%</span></div>
-            <div><span style="font-size: 8px">貸款成數</span>  <span class="rem-2">{{ (item.want / (item.amount * $store.state.ethPrice / 1000) * 100 ).toFixed(2) }}</span> <span style="font-size: 10px;">%</span></div>
+          <div class="px-1 h-100" :class="item.settle === 2 ? 'lightWarning warning--text' : 'lightPrimary'">
+            <div><span style="font-size: 8px" class="black--text">利率</span>  <span class="rem-2">{{ item.rate * 100 }}</span> <span style="font-size: 10px;">%</span></div>
+            <div><span style="font-size: 8px" class="black--text">貸款成數</span>  <span class="rem-2">{{ (item.want / (item.amount * $store.state.ethPrice / 1000) * 100 ).toFixed(2) }}</span> <span style="font-size: 10px;">%</span></div>
           </div>
         </v-col>
         <v-col cols="2" class="rem-0 pa-2">
@@ -127,19 +143,23 @@
 
         <div class="py-5 status-block">
           <div>#{{ currItem.id }}</div>
-          <div>{{ currItem.pendingStatus }}</div>
-          <div>-</div>
-          <div>-</div>
+          <div :class="isWarningText">
+            {{ currItem.pendingStatus ? currItem.pendingStatus
+             : currItem.settle === 2  ? '違約'
+             : currItem.settle === 5  ? '已還款' : '' }}
+          </div>
+          <div :class="isWarningText">-</div>
+          <div :class="isWarningText">-</div>
         </div>
 
         <div class="py-5 borrower-block">
           <div>借方</div>
-          <div class="rem-20 font-weight-bold">{{ currItem.borrower }}</div>
-          <div class="rem-2 break-all">{{ currItem.borrower_address }}</div>
-          <div>借款金額  {{ currItem.want }} {{ basicToken.toUpperCase() }}</div>
-          <div>抵押數量  {{ currItem.amount }} {{ borrowToken.toUpperCase() }}</div>
-          <div>利率  {{ currItem.rate * 100 }}%</div>
-          <div>貸款成數  {{ (currItem.want / (currItem.amount * $store.state.ethPrice / 1000) * 100 ).toFixed(2) }}%</div>
+          <div class="rem-20 font-weight-bold" :class="isWarningText">{{ currItem.borrower }}</div>
+          <div class="rem-2 break-all" :class="isWarningText">{{ currItem.borrower_address }}</div>
+          <div>借款金額  <span :class="isWarningText">{{ currItem.want }} {{ basicToken.toUpperCase() }}</span></div>
+          <div>抵押數量  <span :class="isWarningText">{{ currItem.amount }} {{ borrowToken.toUpperCase() }}</span></div>
+          <div>利率  <span :class="isWarningText">{{ currItem.rate * 100 }}%</span></div>
+          <div>貸款成數  <span :class="isWarningText">{{ (currItem.want / (currItem.amount * $store.state.ethPrice / 1000) * 100 ).toFixed(2) }}%</span></div>
         </div>
 
         <div class="py-5 lender-block">
@@ -193,11 +213,19 @@ export default {
         return []
       }
     },
+    settleText: Number,
+    settleItems: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
   },
   data() {
     return {
       lenderInput: '',
       borrowerInput: '',
+      settleInput: '',
       page: 1,
       detailsShow: false,
       currItem: {}
@@ -209,6 +237,9 @@ export default {
     },
     borrowerInput(newVal) {
       this.$emit('update:borrowerText', newVal)
+    },
+    settleInput(newVal) {
+      this.$emit('update:settleText', newVal)
     },
     itemPerPage() {
       this.page = 1
@@ -224,6 +255,9 @@ export default {
     },
     currOrder() {
       return this.orders.slice(this.itemPerPage * (this.page - 1), this.itemPerPage * this.page)
+    },
+    isWarningText() {
+      return this.currItem && this.currItem.settle === 2 ? 'warning--text' : ''
     }
   },
   methods: {
@@ -235,6 +269,7 @@ export default {
   mounted() {
     this.lenderInput = this.lenderText
     this.borrowerInput = this.borrowerText
+    this.settleInput = this.settleText
   }
 }
 </script>
