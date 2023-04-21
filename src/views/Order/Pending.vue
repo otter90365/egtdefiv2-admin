@@ -70,8 +70,8 @@ export default {
       headers: [
         { text: '編號', value: 'id', align: 'center', sortable: false },
         { text: '狀態', value: 'pendingStatus', align: 'center', sortable: false },
-        { text: '貸方', value: 'borrower', align: 'center', sortable: false },
-        { text: '貸方地址', value: 'borrower_address', align: 'center', sortable: false },
+        { text: '借方', value: 'borrower', align: 'center', sortable: false },
+        { text: '借方地址', value: 'borrower_address', align: 'center', sortable: false },
         { text: '借款金額', value: 'want', align: 'center', sortable: false },
         { text: '利率', value: 'rate', align: 'center', sortable: false },
         { text: '抵押數量', value: 'amount', align: 'center', sortable: false },
