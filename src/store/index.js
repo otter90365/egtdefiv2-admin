@@ -292,7 +292,10 @@ export default new Vuex.Store({
     async getLoaningOrder({state}, data){
       const lender = data.lender ? `&lender=${data.lender}` : ''
       const borrower = data.borrower ? `&borrower=${data.borrower}` : ''
-      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/order/ordering?basic_token=${data.basicToken.toLowerCase()}&borrow_token=${data.borrowToken.toLowerCase()}${lender}${borrower}`, {
+      const settle = data.settle ? `&settle_status=${data.settle}` : ''
+      const startTime = data.startTime ? `&settle_time_start=${data.startTime}` : ''
+      const endTime = data.endTime ? `&settle_time_end=${data.endTime}` : ''
+      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/order/ordering?basic_token=${data.basicToken.toLowerCase()}&borrow_token=${data.borrowToken.toLowerCase()}${lender}${borrower}${settle}${startTime}${endTime}`, {
         headers: {
           authorization: `Berear ${state.token}`
         }

@@ -44,6 +44,22 @@
             </v-card-text>
           </v-card>
 
+          <!-- 到期日/時間 -->
+          <v-card class="rounded-lg mb-6" v-if="isSettleDay">
+            <v-card-title class="darkPrimary1 white--text py-0 font-weight-bold rem-2 d-flex justify-space-between align-center">
+              到期日/時間
+              <v-icon color="white" @click="settleDayShow = !settleDayShow">{{ settleDayShow ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+            </v-card-title>
+            <v-card-text class="lightPrimary pa-0" v-if="settleDayShow">
+              <v-list class="rounded-lg py-3 px-7">
+                <settleDayInput
+                  :startTimeText.sync="currStartTime"
+                  :endTimeText.sync="currEndTime"
+                ></settleDayInput>
+              </v-list>
+            </v-card-text>
+          </v-card>
+
           <!-- 貸方 -->
           <v-card class="rounded-lg mb-6" v-if="isLender">
             <v-card-title class="darkPrimary1 white--text py-0 font-weight-bold rem-2 d-flex justify-space-between align-center">
@@ -105,6 +121,7 @@
 
 <script>
 import searchInput from '@/components/searchInput'
+import settleDayInput from '@/components/settleDayInput'
 export default {
   props: {
     // status
@@ -152,6 +169,19 @@ export default {
       type: String,
       default: ''
     },
+    // settle day
+    isSettleDay: {
+      type: Boolean,
+      default: false
+    },
+    startTimeText: {
+      type: String,
+      default: ''
+    },
+    endTimeText: {
+      type: String,
+      default: ''
+    },
   },
   data() {
     return {
@@ -167,6 +197,10 @@ export default {
       searchLender: '',
       currLender: '',
       lenderShow: true,
+      // settle day
+      settleDayShow: true,
+      currStartTime: '',
+      currEndTime: '',
     }
   },
   watch: {
@@ -190,10 +224,24 @@ export default {
     },
     lenderText(newVal) {
       this.currLender = newVal
+    },
+    // settle day
+    currStartTime(newVal) {
+      this.$emit('update:startTimeText', newVal)
+    },
+    startTimeText(newVal) {
+      this.currStartTime = newVal
+    },
+    currEndTime(newVal) {
+      this.$emit('update:endTimeText', newVal)
+    },
+    endTimeText(newVal) {
+      this.currEndTime = newVal
     }
   },
   components: {
-    searchInput
+    searchInput,
+    settleDayInput
   },
   methods: {
     
@@ -202,6 +250,8 @@ export default {
     this.currBorrower = this.borrowerText
     this.currLender = this.lenderText
     this.currStatus = this.statusText
+    this.currStartTime = this.startTimeText
+    this.currEndTime = this.endTimeText
   }
 }
 </script>

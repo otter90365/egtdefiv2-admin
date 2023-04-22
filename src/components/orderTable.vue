@@ -28,20 +28,18 @@
           ></inputBlock>
         </template>
         <template v-slot:header.settle_day="{}">
-          <inputBlock
-            mode="select"
-            placeholder="到期日/時間"
-            :selectItems="['進緩衝', '貸款中']"
-            width="67"
-          ></inputBlock>
+          <settleDayInput
+            :startTimeText.sync="startTimeInput"
+            :endTimeText.sync="endTimeInput"
+          ></settleDayInput>
         </template>
         <template v-slot:header.countdown="{}">
-          <inputBlock
+          <!--<inputBlock
             mode="select"
             placeholder="倒數計時"
             :selectItems="['進緩衝', '貸款中']"
             width="67"
-          ></inputBlock>
+          ></inputBlock>-->
         </template>
         <template v-slot:header.lender="{}">
           <inputBlock
@@ -68,7 +66,9 @@
         </template>
         <template v-slot:item.settle="{item}">
           <span>{{ item.settle === 2 ? '違約'
-                 : item.settle === 5 ? '已還款' : '' }}</span>
+                 : item.settle === 5 ? '已還款'
+                 : item.settle === 1 ? '緩衝期'
+                 : item.settle === 3 ? '貸款中' : '' }}</span>
         </template>
         <template v-slot:item.settle_day="{item}">
           {{ timestampToTime(item.settle_day * 1000) }}
@@ -100,7 +100,9 @@
           <v-col cols="2" :class="{'warning--text': item.settle === 2}">
             {{ item.pendingStatus ? item.pendingStatus
             : item.settle === 2  ? '違約'
-            : item.settle === 5  ? '已還款' : ''
+            : item.settle === 5  ? '已還款'
+            : item.settle === 1 ? '緩衝期'
+            : item.settle === 3 ? '貸款中' : ''
             }}
           </v-col>
           <v-col cols="5" class="text-center" :class="{'warning--text': item.settle === 2}">{{ '-' }}</v-col>
@@ -158,7 +160,9 @@
           <div :class="isWarningText">
             {{ currItem.pendingStatus ? currItem.pendingStatus
              : currItem.settle === 2  ? '違約'
-             : currItem.settle === 5  ? '已還款' : '' }}
+             : currItem.settle === 5  ? '已還款'
+             : currItem.settle === 1 ? '緩衝期'
+             : currItem.settle === 3 ? '貸款中' : '' }}
           </div>
           <div :class="isWarningText">-</div>
           <div :class="isWarningText">-</div>
@@ -189,6 +193,7 @@
 <script>
 import base from '@/mixin/base'
 import inputBlock from '@/components/inputBlock'
+import settleDayInput from '@/components/settleDayInput'
 export default {
   mixins: [base],
   props: {
@@ -232,12 +237,16 @@ export default {
         return []
       }
     },
+    startTimeText: String,
+    endTimeText: String,
   },
   data() {
     return {
       lenderInput: '',
       borrowerInput: '',
       settleInput: '',
+      startTimeInput: '',
+      endTimeInput: '',
       page: 1,
       detailsShow: false,
       currItem: {}
@@ -262,13 +271,26 @@ export default {
     settleText(newVal) {
       this.settleInput = newVal
     },
+    startTimeInput(newVal) {
+      this.$emit('update:startTimeText', newVal)
+    },
+    startTimeText(newVal) {
+      this.startTimeInput = newVal
+    },
+    endTimeInput(newVal) {
+      this.$emit('update:endTimeText', newVal)
+    },
+    endTimeText(newVal) {
+      this.endTimeInput = newVal
+    },
     itemPerPage() {
       this.page = 1
       this.$forceUpdate()
     }
   },
   components: {
-    inputBlock
+    inputBlock,
+    settleDayInput
   },
   computed: {
     totalPage() {
@@ -301,6 +323,8 @@ export default {
     this.lenderInput = this.lenderText
     this.borrowerInput = this.borrowerText
     this.settleInput = this.settleText
+    this.startTimeInput = this.startTimeText
+    this.endTimeInput = this.endTimeText
   }
 }
 </script>
