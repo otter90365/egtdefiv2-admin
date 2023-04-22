@@ -88,46 +88,58 @@
       </v-data-table>
     </div>
 
-    <v-row class="d-block d-md-none mobile-order py-1 px-2 mb-2 can-click" v-for="item in currOrder" :key="item.id" @click="clickRow(item)">
-      <v-row class="rem-0 font-weight-bold">
-        <v-col cols="2">#{{ item.id }}</v-col>
-        <v-col cols="2" :class="{'warning--text': item.settle === 2}">
-          {{ item.pendingStatus ? item.pendingStatus
-           : item.settle === 2  ? '違約'
-           : item.settle === 5  ? '已還款' : ''
-          }}
-        </v-col>
-        <v-col cols="5" class="text-center" :class="{'warning--text': item.settle === 2}">{{ '-' }}</v-col>
-        <v-col cols="3" class="text-center" :class="{'warning--text': item.settle === 2}">{{ '-' }}</v-col>
+    <template v-if="currOrder.length">
+      <v-row
+        class="d-block d-md-none mobile-order py-1 px-2 mb-2 can-click"
+        v-for="item in currOrder"
+        :key="item.id"
+        @click="clickRow(item)"
+      >
+        <v-row class="rem-0 font-weight-bold">
+          <v-col cols="2">#{{ item.id }}</v-col>
+          <v-col cols="2" :class="{'warning--text': item.settle === 2}">
+            {{ item.pendingStatus ? item.pendingStatus
+            : item.settle === 2  ? '違約'
+            : item.settle === 5  ? '已還款' : ''
+            }}
+          </v-col>
+          <v-col cols="5" class="text-center" :class="{'warning--text': item.settle === 2}">{{ '-' }}</v-col>
+          <v-col cols="3" class="text-center" :class="{'warning--text': item.settle === 2}">{{ '-' }}</v-col>
+        </v-row>
+        <v-row no-gutters align="stretch">
+          <v-col cols="2" class="rem-0 pa-2" :class="{'warning--text': item.settle === 2}">
+            <div>
+              <span class="mr-1">{{ item.borrower }}</span>
+              <span style="font-size: 8px">借方</span>
+            </div>
+            <div class="break-all">{{ item.borrower_address }}</div>
+          </v-col>
+          <v-col cols="4" class="pa-1">
+            <div class="px-1 h-100" :class="item.settle === 2 ? 'lightWarning warning--text' : 'lightPrimary'">
+              <div><span style="font-size: 8px" class="black--text">借款金額</span>  <span class="rem-2">{{ item.want }}</span> <span style="font-size: 10px;">{{ basicToken.toUpperCase() }}</span></div>
+              <div><span style="font-size: 8px" class="black--text">抵押數量</span>  <span class="rem-2">{{ item.amount }}</span> <span style="font-size: 10px;">{{ borrowToken.toUpperCase() }}</span></div>
+            </div>
+          </v-col>
+          <v-col cols="4" class="pa-1">
+            <div class="px-1 h-100" :class="item.settle === 2 ? 'lightWarning warning--text' : 'lightPrimary'">
+              <div><span style="font-size: 8px" class="black--text">利率</span>  <span class="rem-2">{{ item.rate * 100 }}</span> <span style="font-size: 10px;">%</span></div>
+              <div><span style="font-size: 8px" class="black--text">貸款成數</span>  <span class="rem-2">{{ (item.want / (item.amount * $store.state.ethPrice / 1000) * 100 ).toFixed(2) }}</span> <span style="font-size: 10px;">%</span></div>
+            </div>
+          </v-col>
+          <v-col cols="2" class="rem-0 pa-2">
+            <div>
+              <span class="mr-1">{{ item.lender || '-' }}</span>
+              <span style="font-size: 8px" v-if="item.lender">貸方</span>
+            </div>
+            <div class="break-all">{{ item.lender_address !== '0x0000000000000000000000000000000000000000' ? item.lender_address : '-' }}</div>
+          </v-col>
+        </v-row>
       </v-row>
-      <v-row no-gutters align="stretch">
-        <v-col cols="2" class="rem-0 pa-2" :class="{'warning--text': item.settle === 2}">
-          <div>
-            <span class="mr-1">{{ item.borrower }}</span>
-            <span style="font-size: 8px">借方</span>
-          </div>
-          <div class="break-all">{{ item.borrower_address }}</div>
-        </v-col>
-        <v-col cols="4" class="pa-1">
-          <div class="px-1 h-100" :class="item.settle === 2 ? 'lightWarning warning--text' : 'lightPrimary'">
-            <div><span style="font-size: 8px" class="black--text">借款金額</span>  <span class="rem-2">{{ item.want }}</span> <span style="font-size: 10px;">{{ basicToken.toUpperCase() }}</span></div>
-            <div><span style="font-size: 8px" class="black--text">抵押數量</span>  <span class="rem-2">{{ item.amount }}</span> <span style="font-size: 10px;">{{ borrowToken.toUpperCase() }}</span></div>
-          </div>
-        </v-col>
-        <v-col cols="4" class="pa-1">
-          <div class="px-1 h-100" :class="item.settle === 2 ? 'lightWarning warning--text' : 'lightPrimary'">
-            <div><span style="font-size: 8px" class="black--text">利率</span>  <span class="rem-2">{{ item.rate * 100 }}</span> <span style="font-size: 10px;">%</span></div>
-            <div><span style="font-size: 8px" class="black--text">貸款成數</span>  <span class="rem-2">{{ (item.want / (item.amount * $store.state.ethPrice / 1000) * 100 ).toFixed(2) }}</span> <span style="font-size: 10px;">%</span></div>
-          </div>
-        </v-col>
-        <v-col cols="2" class="rem-0 pa-2">
-          <div>
-            <span class="mr-1">{{ item.lender || '-' }}</span>
-            <span style="font-size: 8px" v-if="item.lender">貸方</span>
-          </div>
-          <div class="break-all">{{ item.lender_address !== '0x0000000000000000000000000000000000000000' ? item.lender_address : '-' }}</div>
-        </v-col>
-      </v-row>
+    </template>
+    <v-row v-else class="d-block d-md-none text-center rounded-lg grey--text mb-5" style="border: solid 1px lightgray;">
+      <v-col cols="12">
+        No data available
+      </v-col>
     </v-row>
 
     <v-pagination v-model="page" circle :length="totalPage" :total-visible="7"></v-pagination>
