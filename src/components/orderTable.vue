@@ -34,12 +34,11 @@
           ></settleDayInput>
         </template>
         <template v-slot:header.countdown="{}">
-          <!--<inputBlock
-            mode="select"
-            placeholder="倒數計時"
-            :selectItems="['進緩衝', '貸款中']"
-            width="67"
-          ></inputBlock>-->
+          <countdownInput
+            :startTimeText="countdownStartTimeInput"
+            :endTimeText="countdownEndTimeInput"
+            @updateCountdown="updateCountdown"
+          ></countdownInput>
         </template>
         <template v-slot:header.lender="{}">
           <inputBlock
@@ -213,6 +212,7 @@
 import base from '@/mixin/base'
 import inputBlock from '@/components/inputBlock'
 import settleDayInput from '@/components/settleDayInput'
+import countdownInput from '@/components/countdownInput'
 export default {
   mixins: [base],
   props: {
@@ -258,6 +258,8 @@ export default {
     },
     startTimeText: String,
     endTimeText: String,
+    countdownStartTimeText: [String, Number],
+    countdownEndTimeText: [String, Number],
   },
   data() {
     return {
@@ -266,6 +268,8 @@ export default {
       settleInput: '',
       startTimeInput: null,
       endTimeInput: null,
+      countdownStartTimeInput: null,
+      countdownEndTimeInput: null,
       page: 1,
       detailsShow: false,
       currItem: {},
@@ -304,6 +308,12 @@ export default {
     endTimeText(newVal) {
       this.endTimeInput = newVal
     },
+    countdownStartTimeText(newVal) {
+      this.countdownStartTimeInput = newVal
+    },
+    countdownEndTimeText(newVal) {
+      this.countdownEndTimeInput = newVal
+    },
     itemPerPage() {
       this.page = 1
       this.$forceUpdate()
@@ -321,7 +331,8 @@ export default {
   },
   components: {
     inputBlock,
-    settleDayInput
+    settleDayInput,
+    countdownInput
   },
   computed: {
     totalPage() {
@@ -363,6 +374,11 @@ export default {
         item.countdown = { day, hour, min, sec }
       })
       this.$forceUpdate()
+    },
+    updateCountdown(data) {
+      this.countdownStartTimeInput = data.startTime
+      this.countdownEndTimeInput = data.endTime
+      this.$emit('updateCountdown', data)
     }
   },
   mounted() {
@@ -371,6 +387,8 @@ export default {
     this.settleInput = this.settleText
     this.startTimeInput = this.startTimeText
     this.endTimeInput = this.endTimeText
+    this.countdownStartTimeInput = this.countdownStartTimeText
+    this.countdownEndTimeInput = this.countdownEndTimeText
   },
   destroyed() {
     if (this.timer) {

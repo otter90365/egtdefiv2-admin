@@ -60,6 +60,23 @@
             </v-card-text>
           </v-card>
 
+          <!-- 倒數計時 -->
+          <v-card class="rounded-lg mb-6" v-if="isCountdown">
+            <v-card-title class="darkPrimary1 white--text py-0 font-weight-bold rem-2 d-flex justify-space-between align-center">
+              倒數計時
+              <v-icon color="white" @click="countdownShow = !countdownShow">{{ countdownShow ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+            </v-card-title>
+            <v-card-text class="lightPrimary pa-0" v-if="countdownShow">
+              <v-list class="rounded-lg py-4 px-3">
+                <countdownInput
+                  :startTimeText="currCountdownStartTime"
+                  :endTimeText="currCountdownEndTime"
+                  @updateCountdown="updateCountdown"
+                ></countdownInput>
+              </v-list>
+            </v-card-text>
+          </v-card>
+
           <!-- 貸方 -->
           <v-card class="rounded-lg mb-6" v-if="isLender">
             <v-card-title class="darkPrimary1 white--text py-0 font-weight-bold rem-2 d-flex justify-space-between align-center">
@@ -122,6 +139,7 @@
 <script>
 import searchInput from '@/components/searchInput'
 import settleDayInput from '@/components/settleDayInput'
+import countdownInput from '@/components/countdownInput'
 export default {
   props: {
     // status
@@ -176,6 +194,13 @@ export default {
     },
     startTimeText: String,
     endTimeText: String,
+    // countdown
+    isCountdown: {
+      type: Boolean,
+      default: false
+    },
+    countdownStartTimeText: [String, Number],
+    countdownEndTimeText: [String, Number],
   },
   data() {
     return {
@@ -195,6 +220,10 @@ export default {
       settleDayShow: true,
       currStartTime: null,
       currEndTime: null,
+      // countdown
+      countdownShow: true,
+      currCountdownStartTime: null,
+      currCountdownEndTime: null,
     }
   },
   watch: {
@@ -231,14 +260,27 @@ export default {
     },
     endTimeText(newVal) {
       this.currEndTime = newVal
-    }
+    },
+    // countdown
+    countdownStartTimeText(newVal) {
+      this.currCountdownStartTime = newVal
+    },
+    countdownEndTimeText(newVal) {
+      this.currCountdownEndTime = newVal
+    },
   },
   components: {
     searchInput,
-    settleDayInput
+    settleDayInput,
+    countdownInput
   },
   methods: {
-    
+    updateCountdown(data) {
+      this.currCountdownStartTime = data.startTime
+      this.currCountdownEndTime = data.endTime
+      this.$emit('updateCountdown', data)
+      this.filterDrawer = false
+    }
   },
   mounted() {
     this.currBorrower = this.borrowerText
@@ -246,6 +288,8 @@ export default {
     this.currStatus = this.statusText
     this.currStartTime = this.startTimeText
     this.currEndTime = this.endTimeText
+    this.currCountdownStartTime = this.countdownStartTimeText
+    this.currCountdownEndTime = this.countdownEndTimeText
   }
 }
 </script>

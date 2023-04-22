@@ -295,7 +295,9 @@ export default new Vuex.Store({
       const settle = data.settle ? `&settle_status=${data.settle}` : ''
       const startTime = data.startTime ? `&settle_time_start=${data.startTime}` : ''
       const endTime = data.endTime ? `&settle_time_end=${data.endTime}` : ''
-      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/order/ordering?basic_token=${data.basicToken.toLowerCase()}&borrow_token=${data.borrowToken.toLowerCase()}${lender}${borrower}${settle}${startTime}${endTime}`, {
+      const countdownStartTime = data.countdownStartTime ? `&start_time=${data.countdownStartTime}` : ''
+      const countdownEndTime = data.countdownEndTime ? `&end_time=${data.countdownEndTime}` : ''
+      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/order/ordering?basic_token=${data.basicToken.toLowerCase()}&borrow_token=${data.borrowToken.toLowerCase()}${lender}${borrower}${settle}${startTime}${endTime}${countdownStartTime}${countdownEndTime}`, {
         headers: {
           authorization: `Berear ${state.token}`
         }

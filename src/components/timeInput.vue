@@ -33,7 +33,9 @@
 <script>
 export default {
   props: {
-    timeInput: String,
+    timeInput: {
+      type: [String, Number]
+    },
     color: {
       type: String,
       default: 'primary'
@@ -52,7 +54,9 @@ export default {
       this.$emit('update:timeInput', newVal)
     },
     timeInput(newVal) {
-      this.time = newVal
+      if (typeof newVal === 'string') {
+        this.time = newVal
+      }
     }
   },
   computed: {
@@ -60,7 +64,7 @@ export default {
       return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
     },
     timeFormatted () {
-      if (!this.time) return null
+      if (!this.time || typeof this.time !== 'string') return null
 
       const [year, month, day] = this.time.split('-')
       return `${day} ${this.monthList[month-1]}. ${year}`
@@ -72,7 +76,9 @@ export default {
     },
   },
   mounted() {
-    this.time = this.timeInput
+    if (typeof this.timeInput === 'string') {
+      this.time = this.timeInput
+    }
   }
 }
 </script>

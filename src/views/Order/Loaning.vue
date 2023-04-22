@@ -18,8 +18,10 @@
         <filterBlock
           isStatus :statusItems="settleItems" :statusText.sync="settleText"
           isSettleDay :startTimeText.sync="startTimeText" :endTimeText.sync="endTimeText"
+          isCountdown :countdownStartTimeText="countdownStartTimeText" :countdownEndTimeText="countdownEndTimeText"
           isBorrower :borrowerItems="borrowerItems" :borrowerText.sync="borrowerText"
           isLender :lenderItems="lenderItems" :lenderText.sync="lenderText"
+          @updateCountdown="updateCountdown"
         ></filterBlock>
       </div>
     </div>
@@ -57,7 +59,10 @@
         :settleText.sync="settleText"
         :startTimeText.sync="startTimeText"
         :endTimeText.sync="endTimeText"
+        :countdownStartTimeText="countdownStartTimeText"
+        :countdownEndTimeText="countdownEndTimeText"
         :settleItems="settleItems"
+        @updateCountdown="updateCountdown"
       ></orderTable>
     </section>
   </div>
@@ -99,6 +104,8 @@ export default {
       settleItems: [],
       startTimeText: null,
       endTimeText: null,
+      countdownStartTimeText: null,
+      countdownEndTimeText: null,
     }
   },
   components: {
@@ -146,6 +153,8 @@ export default {
         settle: this.settleText,
         startTime: Date.parse(this.startTimeText) / 1000 - 8 * 60 * 60,
         endTime: Date.parse(this.endTimeText) / 1000 + 16 * 60 * 60 - 1,
+        countdownStartTime: this.countdownStartTimeText,
+        countdownEndTime: this.countdownEndTimeText,
       })
       if (result.status === 231 && result.data) {
         this.orders = result.data.orders.map(item => {
@@ -159,7 +168,13 @@ export default {
         this.lenderItems = [null, ...result.data.lender]
         this.settleItems = [null, {name: '緩衝期', value: 1}, {name: '貸款中', value: 3}]
         this.filterOrders = this.orders.filter(item => item.borrower.includes(this.search) || item.lender.includes(this.search))
+        this.$forceUpdate()
       }
+    },
+    async updateCountdown(data) {
+      this.countdownStartTimeText = data.startTime
+      this.countdownEndTimeText = data.endTime
+      await this.getLoaningOrder()
     }
   },
   async mounted() {
