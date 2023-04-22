@@ -7,7 +7,7 @@
         :items-per-page="itemPerPage"
         hide-default-footer
         @click:row="clickRow"
-        :item-class="(item) => item.settle === 2 ? 'warning--text' : ''"
+        :item-class="(item) => item.settle === 2 || item.settle === 1 ? 'warning--text' : ''"
       >
         <!-- header -->
         <template v-slot:header.status="{}">
@@ -62,7 +62,7 @@
 
         <!-- item -->
         <template v-slot:item.id="{item}">
-          <span :class="item.settle === 2 ? 'warning--text' : 'lightPrimary--text'">#{{ item.id }}</span>
+          <span :class="item.settle === 2 || item.settle === 1 ? 'warning--text' : 'lightPrimary--text'">#{{ item.id }}</span>
         </template>
         <template v-slot:item.settle="{item}">
           <span>{{ item.settle === 2 ? '違約'
@@ -97,7 +97,7 @@
       >
         <v-row class="rem-0 font-weight-bold">
           <v-col cols="2">#{{ item.id }}</v-col>
-          <v-col cols="2" :class="{'warning--text': item.settle === 2}">
+          <v-col cols="2" :class="{'warning--text': item.settle === 2 || item.settle === 1}">
             {{ item.pendingStatus ? item.pendingStatus
             : item.settle === 2  ? '違約'
             : item.settle === 5  ? '已還款'
@@ -105,11 +105,13 @@
             : item.settle === 3 ? '貸款中' : ''
             }}
           </v-col>
-          <v-col cols="5" class="text-center" :class="{'warning--text': item.settle === 2}">{{ '-' }}</v-col>
-          <v-col cols="3" class="text-center" :class="{'warning--text': item.settle === 2}">{{ '-' }}</v-col>
+          <v-col cols="5" class="text-center" :class="{'warning--text': item.settle === 2 || item.settle === 1}">
+            {{ item.settle === 1 || item.settle === 3 ? timestampToTime(item.settle_day * 1000) : '-' }}
+          </v-col>
+          <v-col cols="3" class="text-center" :class="{'warning--text': item.settle === 2 || item.settle === 1}">{{ '-' }}</v-col>
         </v-row>
         <v-row no-gutters align="stretch">
-          <v-col cols="2" class="rem-0 pa-2" :class="{'warning--text': item.settle === 2}">
+          <v-col cols="2" class="rem-0 pa-2" :class="{'warning--text': item.settle === 2 || item.settle === 1}">
             <div>
               <span class="mr-1">{{ item.borrower }}</span>
               <span style="font-size: 8px">借方</span>
@@ -117,13 +119,13 @@
             <div class="break-all">{{ item.borrower_address }}</div>
           </v-col>
           <v-col cols="4" class="pa-1">
-            <div class="px-1 h-100" :class="item.settle === 2 ? 'lightWarning warning--text' : 'lightPrimary'">
+            <div class="px-1 h-100" :class="item.settle === 2 || item.settle === 1 ? 'lightWarning warning--text' : 'lightPrimary'">
               <div><span style="font-size: 8px" class="black--text">借款金額</span>  <span class="rem-2">{{ item.want }}</span> <span style="font-size: 10px;">{{ basicToken.toUpperCase() }}</span></div>
               <div><span style="font-size: 8px" class="black--text">抵押數量</span>  <span class="rem-2">{{ item.amount }}</span> <span style="font-size: 10px;">{{ borrowToken.toUpperCase() }}</span></div>
             </div>
           </v-col>
           <v-col cols="4" class="pa-1">
-            <div class="px-1 h-100" :class="item.settle === 2 ? 'lightWarning warning--text' : 'lightPrimary'">
+            <div class="px-1 h-100" :class="item.settle === 2 || item.settle === 1 ? 'lightWarning warning--text' : 'lightPrimary'">
               <div><span style="font-size: 8px" class="black--text">利率</span>  <span class="rem-2">{{ item.rate * 100 }}</span> <span style="font-size: 10px;">%</span></div>
               <div><span style="font-size: 8px" class="black--text">貸款成數</span>  <span class="rem-2">{{ getMortgageRate(item) }}</span> <span style="font-size: 10px;">%</span></div>
             </div>
@@ -164,7 +166,9 @@
              : currItem.settle === 1 ? '緩衝期'
              : currItem.settle === 3 ? '貸款中' : '' }}
           </div>
-          <div :class="isWarningText">-</div>
+          <div :class="isWarningText">
+            {{ currItem.settle === 1 || currItem.settle === 3 ? timestampToTime(currItem.settle_day * 1000) : '-' }}
+          </div>
           <div :class="isWarningText">-</div>
         </div>
 
@@ -300,7 +304,7 @@ export default {
       return this.orders.slice(this.itemPerPage * (this.page - 1), this.itemPerPage * this.page)
     },
     isWarningText() {
-      return this.currItem && this.currItem.settle === 2 ? 'warning--text' : ''
+      return this.currItem && (this.currItem.settle === 2 || this.currItem.settle === 1) ? 'warning--text' : ''
     }
   },
   methods: {
