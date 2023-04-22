@@ -48,16 +48,11 @@ import inputBlock from '@/components/inputBlock'
 import timeInput from '@/components/timeInput'
 export default {
   props: {
-    isMobile: {
-      type: Boolean,
-      default: true
-    },
     startTimeText: String,
     endTimeText: String,
   },
   data() {
     return {
-      tokenDrawer: false,
       menuShow: false,
       startTime: null,
       endTime: null,
@@ -80,11 +75,6 @@ export default {
   components: {
     inputBlock,
     timeInput
-  },
-  methods: {
-    updateCurrTokenPair(value) {
-      this.$store.commit('updateCurrTokenPair', value)
-    },
   },
   mounted() {
     this.startTime = this.startTimeText
