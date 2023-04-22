@@ -52,14 +52,8 @@ export default {
       type: Boolean,
       default: true
     },
-    startTimeText: {
-      type: String,
-      default: ''
-    },
-    endTimeText: {
-      type: String,
-      default: ''
-    }
+    startTimeText: String,
+    endTimeText: String,
   },
   data() {
     return {

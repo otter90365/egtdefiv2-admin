@@ -174,14 +174,8 @@ export default {
       type: Boolean,
       default: false
     },
-    startTimeText: {
-      type: String,
-      default: ''
-    },
-    endTimeText: {
-      type: String,
-      default: ''
-    },
+    startTimeText: String,
+    endTimeText: String,
   },
   data() {
     return {
@@ -199,8 +193,8 @@ export default {
       lenderShow: true,
       // settle day
       settleDayShow: true,
-      currStartTime: '',
-      currEndTime: '',
+      currStartTime: null,
+      currEndTime: null,
     }
   },
   watch: {

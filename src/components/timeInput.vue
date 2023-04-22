@@ -33,10 +33,7 @@
 <script>
 export default {
   props: {
-    timeInput: {
-      type: String,
-      default: ''
-    },
+    timeInput: String,
     color: {
       type: String,
       default: 'primary'

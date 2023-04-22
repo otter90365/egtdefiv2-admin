@@ -73,6 +73,11 @@
         <template v-slot:item.settle_day="{item}">
           {{ timestampToTime(item.settle_day * 1000) }}
         </template>
+        <template v-slot:item.countdown="{item}">
+          <div v-if="item.countdown">
+            {{ item.settle === 1 ? '-' : '' }}{{ (item.countdown.day * 24 + item.countdown.hour).toString().padStart(2, "0") }}:{{ (item.countdown.min).toString().padStart(2, "0") }}:{{ item.countdown.sec.toString().padStart(2, "0") }}
+          </div>
+        </template>
         <template v-slot:item.want="{item}">
           {{ item.want }} {{ basicToken.toUpperCase() }}
         </template>
@@ -108,7 +113,12 @@
           <v-col cols="5" class="text-center" :class="{'warning--text': item.settle === 2 || item.settle === 1}">
             {{ item.settle === 1 || item.settle === 3 ? timestampToTime(item.settle_day * 1000) : '-' }}
           </v-col>
-          <v-col cols="3" class="text-center" :class="{'warning--text': item.settle === 2 || item.settle === 1}">{{ '-' }}</v-col>
+          <v-col cols="3" class="text-center" :class="{'warning--text': item.settle === 2 || item.settle === 1}">
+            <div v-if="(item.settle === 1 || item.settle === 3) && item.countdown">
+              {{ item.settle === 1 ? '-' : '' }}{{ (item.countdown.day * 24 + item.countdown.hour).toString().padStart(2, "0") }}:{{ (item.countdown.min).toString().padStart(2, "0") }}:{{ item.countdown.sec.toString().padStart(2, "0") }}
+            </div>
+            <div v-else>{{ '-' }}</div>
+          </v-col>
         </v-row>
         <v-row no-gutters align="stretch">
           <v-col cols="2" class="rem-0 pa-2" :class="{'warning--text': item.settle === 2 || item.settle === 1}">
@@ -169,7 +179,12 @@
           <div :class="isWarningText">
             {{ currItem.settle === 1 || currItem.settle === 3 ? timestampToTime(currItem.settle_day * 1000) : '-' }}
           </div>
-          <div :class="isWarningText">-</div>
+          <div :class="isWarningText">
+            <div v-if="(currItem.settle === 1 || currItem.settle === 3) && currItem.countdown">
+              {{ currItem.settle === 1 ? '-' : '' }}{{ (currItem.countdown.day * 24 + currItem.countdown.hour).toString().padStart(2, "0") }}:{{ (currItem.countdown.min).toString().padStart(2, "0") }}:{{ currItem.countdown.sec.toString().padStart(2, "0") }}
+            </div>
+            <div v-else>-</div>
+          </div>
         </div>
 
         <div class="py-5 borrower-block">
@@ -249,11 +264,13 @@ export default {
       lenderInput: '',
       borrowerInput: '',
       settleInput: '',
-      startTimeInput: '',
-      endTimeInput: '',
+      startTimeInput: null,
+      endTimeInput: null,
       page: 1,
       detailsShow: false,
-      currItem: {}
+      currItem: {},
+      countdownList: [],
+      timer: null,
     }
   },
   watch: {
@@ -290,6 +307,16 @@ export default {
     itemPerPage() {
       this.page = 1
       this.$forceUpdate()
+    },
+    currOrder: {
+      handler: function() {
+        if (this.$route.name === 'Order-Loaning' && !this.timer) {
+          this.timer = window.setInterval(() => {
+            this.getCountdownList()
+          }, 1000)
+        }
+      },
+      deep: true
     }
   },
   components: {
@@ -321,6 +348,21 @@ export default {
       }
 
       return (wantUsd / (item.amount * this.$store.state.ethPrice / 1200) * 100).toFixed(2)
+    },
+    getCountdownList() {
+      let now = Math.floor(Date.now())
+      let sec, min, hour, day
+      this.currOrder.forEach(item => {
+        let dueTime = item.settle_day * 1000
+        let offsetTIme = Math.abs((dueTime - now) / 1000)
+
+        sec = parseInt(offsetTIme % 60)
+        min = parseInt((offsetTIme / 60) % 60)
+        hour = parseInt((offsetTIme / 60 / 60) % 24)
+        day = parseInt(offsetTIme / 60 / 60 / 24)
+        item.countdown = { day, hour, min, sec }
+      })
+      this.$forceUpdate()
     }
   },
   mounted() {
@@ -329,6 +371,12 @@ export default {
     this.settleInput = this.settleText
     this.startTimeInput = this.startTimeText
     this.endTimeInput = this.endTimeText
+  },
+  destroyed() {
+    if (this.timer) {
+      window.clearInterval(this.timer)
+      this.timer = null
+    }
   }
 }
 </script>
