@@ -106,6 +106,7 @@ export default {
       endTimeText: null,
       countdownStartTimeText: null,
       countdownEndTimeText: null,
+      sortText: 'desc',
     }
   },
   components: {
@@ -167,6 +168,17 @@ export default {
         this.borrowerItems = [null, ...result.data.borrower]
         this.lenderItems = [null, ...result.data.lender]
         this.settleItems = [null, {name: '緩衝期', value: 1}, {name: '貸款中', value: 3}]
+
+        // sort order
+        const now = Math.ceil(Date.now() / 1000)
+        this.orders.sort((a, b) => {
+          if (this.sortText === 'asc') {
+            return (a.settle_day - now) - (b.settle_day - now)
+          } else {
+            return (b.settle_day - now) - (a.settle_day - now)
+          }
+        })
+
         this.filterOrders = this.orders.filter(item => item.borrower.includes(this.search) || item.lender.includes(this.search))
         this.$forceUpdate()
       }
@@ -174,6 +186,7 @@ export default {
     async updateCountdown(data) {
       this.countdownStartTimeText = data.startTime
       this.countdownEndTimeText = data.endTime
+      this.sortText = data.sort
       await this.getLoaningOrder()
     }
   },

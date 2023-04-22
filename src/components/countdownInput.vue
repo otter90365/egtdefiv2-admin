@@ -267,6 +267,7 @@ export default {
       this.$emit('updateCountdown', {
         startTime: typeof this.startTime === 'string' ? Math.ceil(Date.parse(this.startTime) / 1000) : this.startTime,
         endTime: typeof this.endTime === 'string' ? Math.ceil(Date.parse(this.endTime) / 1000) : this.endTime,
+        sort: this.currSort
       })
       this.menuShow = false
     }
