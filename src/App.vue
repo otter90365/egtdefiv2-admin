@@ -81,7 +81,7 @@ export default {
     navList: [
       {
         text: '白名單管理',
-        link: 'whitelist',
+        link: 'Whitelist',
         img: 'icon-nav-whitelist'
       },
       {
@@ -279,6 +279,12 @@ export default {
   --v-lightPrimary-base: #C4A9CD !important;
   --v-darkPrimary1-base: #7D5C7C !important;
   --v-darkPrimary2-base: #250E43 !important;
+}
+.Whitelist {
+  --v-primary-base: #EBC154 !important;
+  --v-lightPrimary-base: #EAD876 !important;
+  --v-darkPrimary1-base: #AA8D45 !important;
+  --v-darkPrimary2-base: #CD7F32 !important;
 }
 
 // .app-bar{

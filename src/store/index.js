@@ -177,15 +177,16 @@ export default new Vuex.Store({
       })
       commit('updateUserInfo', result.data.data)
     },
-    // // whitelist
-    // async getWhitelistList({ state }){
-    //   let result = await Vue.axios.get(`${state.backendUrl}/admin${state.backendVersion}/white_list`, {
-    //     headers: {
-    //       authorization: `Berear ${state.token}`
-    //     }
-    //   })
-    //   return result.data
-    // },
+    // whitelist
+    async getWhitelistList({ state }, data){
+      const tag = data.tag ? `?tag=tag&key=${data.tag}` : ''
+      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/whitelist/list${tag}`, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
     // async addWhitelistList({ state }, res){
     //   let result = await Vue.axios.post(`${state.backendUrl}/admin${state.backendVersion}/create_white_list`, res, {
     //     headers: {
@@ -202,6 +203,32 @@ export default new Vuex.Store({
     //   })
     //   return result.data
     // },
+    // whitelist tag
+    async getWhitelistTagList({ state }){
+      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/whitelist/tag`, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
+    async addWhitelistTag({ state }, data){
+      let result = await Vue.axios.post(`${state.backendUrl}${state.backendVersion}/whitelist/create_tag`, data, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
+    async deleteWhitelistTag({ state }, data){
+      let result = await Vue.axios.delete(`${state.backendUrl}${state.backendVersion}/whitelist/delete_tag`, {
+        data: data,
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
     // // admin list
     // async getAdminList({ state }){
     //   let result = await Vue.axios.get(`${state.backendUrl}/admin${state.backendVersion}/admin_list`, {

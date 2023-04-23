@@ -35,15 +35,15 @@ const routes = [
     component: () => import('../views/Login.vue'),
     meta: { requiresAuth: false },
   },
-  // {
-  //   path: '/whitelist',
-  //   name: 'Whitelist',
-  //   component: () => import('../views/Whitelist.vue'),
-  //   meta: {
-  //     requiresAuth: true,
-  //     auth: 1
-  //   },
-  // },
+  {
+    path: '/whitelist',
+    name: 'Whitelist',
+    component: () => import('../views/Whitelist.vue'),
+    meta: {
+      requiresAuth: true,
+      auth: 2
+    },
+  },
   // order
   {
     path: '/order/loaning',
