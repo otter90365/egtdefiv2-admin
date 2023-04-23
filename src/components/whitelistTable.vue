@@ -104,10 +104,10 @@
     </v-dialog>
 
     <!-- edit memo -->
-    <v-dialog v-model="memoDialogShow" width="100%" max-width="585">
+    <v-dialog v-model="memoDialogShow" :fullscreen="$store.state.nowWidth < 960" width="100%" max-width="585">
       <v-card class="pa-4">
         <div class="d-flex justify-end">
-          <v-icon @click="memoDialogShow = false" small>mdi-close</v-icon>
+          <v-icon class="ma-4 ma-md-0" @click="memoDialogShow = false">mdi-close</v-icon>
         </div>
         <div class="py-3 px-5">
           <div class="d-flex flex-column flex-md-row justify-space-between align-md-end align-start">
