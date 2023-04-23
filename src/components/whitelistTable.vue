@@ -29,8 +29,8 @@
             <v-icon class="ml-2" color="darkPrimary2" small @click.stop="showEditMemo(item)">mdi-note-edit</v-icon>
           </div>
         </template>
-        <template v-slot:item.action="{}">
-          <v-icon color="darkPrimary2">mdi-trash-can</v-icon>
+        <template v-slot:item.action="{item}">
+          <v-icon color="darkPrimary2" @click.stop="currItem = item; deleteWhitelistDialogShow = true">mdi-trash-can</v-icon>
         </template>
       </v-data-table>
     </div>
@@ -139,6 +139,52 @@
         </div>
       </v-card>
     </v-dialog>
+
+    <!-- delete whitelist -->
+    <v-dialog v-model="deleteWhitelistDialogShow" width="100%" max-width="585">
+      <v-card class="pa-4">
+        <div class="d-flex justify-end">
+          <v-icon class="ma-4 ma-md-0" @click="deleteWhitelistDialogShow = false">mdi-close</v-icon>
+        </div>
+        <div class="py-3 px-5">
+          <div class="d-flex flex-column flex-md-row justify-space-between align-md-end align-stretch">
+            <div class="rem-28 font-weight-bold text-center text-md-left">確認刪除白名單</div>
+            <div class="rem-0 grey--text mb-2 text-right text-md-left">審核帳號 {{ $store.state.userInfo.account }}</div>
+          </div>
+
+          <div class="delete-whitelist-block font-weight-bold text-center">
+            <div class="rem-md-24 rem-20 mb-8">{{ currItem.name }}</div>
+            <div class="rem-2 rem-md-8 mb-md-5 mb-4">{{ currItem.tag }}</div>
+            <div class="rem-2 rem-md-8 mb-md-5 mb-4">{{ currItem.address }}</div>
+            <div class="rem-2 rem-md-8 mb-md-5 mb-4">{{ timestampToTime(currItem.create_time * 1000) }}</div>
+            <div class="rem-2 rem-md-8 mb-2">{{ currItem.memo }}</div>
+          </div>
+
+          <div class="d-flex justify-space-between mx-auto" style="max-width: 363px;">
+            <v-btn width="33%" outlined depressed color="darkPrimary1" @click="deleteWhitelistDialogShow = false">取消</v-btn>
+            <v-btn width="33%" depressed dark color="darkPrimary1" @click="deleteWhitelistConfirmShow = true">確認</v-btn>
+          </div>
+        </div>
+      </v-card>
+    </v-dialog>
+
+    <!-- delete whitelist confirm -->
+    <v-dialog v-model="deleteWhitelistConfirmShow" width="90%" max-width="500">
+      <v-card class="py-md-8 py-6 px-md-6 px-3 font-weight-bold text-center">
+        <div class="rem-md-28 rem-20 warning--text mb-md-3 mb-2">再次確認刪除</div>
+        <div class="rem-md-3 rem-0 warning--text mb-md-10 mb-6">刪除將無法復原，您確定要刪除嗎?</div>
+        <div class="rem-md-24 rem-20 mb-8 mb-md-4">{{ currItem.name }}</div>
+        <div class="rem-2 rem-md-8 mb-md-4">{{ currItem.tag }}</div>
+        <div class="rem-2 rem-md-8 mb-md-4">{{ currItem.address }}</div>
+        <div class="rem-2 rem-md-8 mb-md-4">{{ timestampToTime(currItem.create_time * 1000) }}</div>
+        <div class="rem-2 rem-md-8 mb-5 mb-md-10">{{ currItem.memo }}</div>
+
+        <div class="d-flex justify-space-between mx-auto" style="max-width: 363px;">
+          <v-btn width="33%" outlined depressed color="darkPrimary1" @click="deleteWhitelistConfirmShow = false">取消</v-btn>
+          <v-btn width="33%" depressed dark color="darkPrimary1" @click="deleteWhitelist()">確認</v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -182,6 +228,8 @@ export default {
       tag: '',
       memoDialogShow: false,
       newMemo: '',
+      deleteWhitelistDialogShow: false,
+      deleteWhitelistConfirmShow: false,
     }
   },
   watch: {
@@ -233,6 +281,41 @@ export default {
           this.$toasted.error('更新失敗')
         }
       }
+    },
+    async deleteWhitelist() {
+      if (this.$store.state.chainId){
+        let isWhitelist = await this.$defi.getIsWhitelist(this.currItem.address)
+        if (!isWhitelist) {
+          this.$toasted.error('該地址非白名單')
+          return;
+        }
+
+        let result = await this.$defi.setWhitelist(this.currItem.address)
+        if (result.txHash){
+          this.$store.commit('updateLoading', {isShow: true, text: ''})
+          this.timer = window.setInterval(async () => {
+            isWhitelist = await this.$defi.getIsWhitelist(this.currItem.address)
+            if (!isWhitelist) {
+              window.clearInterval(this.timer)
+
+              result = await this.$store.dispatch('deleteWhitelist', {id: this.currItem.id})
+              if (result.status === 230) {
+                this.$toasted.show('刪除成功')
+                this.deleteWhitelistDialogShow = false
+                this.deleteWhitelistConfirmShow = false
+                this.$emit('getWhitelistList')
+              } else {
+                this.$toasted.error('刪除失敗')
+              }
+              this.$store.commit('updateLoading', {isShow: false, text: ''})
+            }
+          }, 1000)
+        }else if (result.code === 4001){
+          this.$toasted.error('使用者拒絕連線')
+        }
+      }else{
+        this.$toasted.error('請切換到幣安智能鏈')
+      }
     }
   },
   mounted() {
@@ -260,6 +343,12 @@ export default {
 }
 .memo-edit-block {
   padding: 96px 0;
+  @include dai_vuetify_md {
+    padding: 56px 0;
+  }
+}
+.delete-whitelist-block {
+  padding: 140px 0;
   @include dai_vuetify_md {
     padding: 56px 0;
   }

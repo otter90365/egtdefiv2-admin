@@ -195,22 +195,15 @@ export default new Vuex.Store({
       })
       return result.data
     },
-    // async addWhitelistList({ state }, res){
-    //   let result = await Vue.axios.post(`${state.backendUrl}/admin${state.backendVersion}/create_white_list`, res, {
-    //     headers: {
-    //       authorization: `Berear ${state.token}`
-    //     }
-    //   })
-    //   return result.data
-    // },
-    // async deleteWhitelistList({ state }, res){
-    //   let result = await Vue.axios.post(`${state.backendUrl}/admin${state.backendVersion}/delete_white_list`, res, {
-    //     headers: {
-    //       authorization: `Berear ${state.token}`
-    //     }
-    //   })
-    //   return result.data
-    // },
+    async deleteWhitelist({ state }, data){
+      let result = await Vue.axios.delete(`${state.backendUrl}${state.backendVersion}/whitelist/delete`, {
+        data: data,
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
     // whitelist tag
     async getWhitelistTagList({ state }){
       let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/whitelist/tag`, {
