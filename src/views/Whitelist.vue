@@ -13,7 +13,7 @@
       </div>
 
       <div class="d-flex align-center">
-        <v-menu offset-y v-model="menuShow" v-if="$store.state.nowWidth >= 960">
+        <v-menu offset-y v-model="tagMenuShow" v-if="$store.state.nowWidth >= 960">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               color="darkPrimary1"
@@ -77,6 +77,7 @@
         :tagList="[{tag: null, id: -1, amount: null}, ...tagList]"
         :currTag.sync="currTag"
         @getTagList="getWhitelistTagList()"
+        @getWhitelistList="getWhitelistList()"
       ></whitelistTable>
     </section>
 
@@ -141,6 +142,7 @@ export default {
       ],
       mobileDrawer: false,
       tagShow: true,
+      tagMenuShow: false,
     }
   },
   components: {

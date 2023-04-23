@@ -26,7 +26,7 @@
         <template v-slot:item.memo="{item}">
           <div class="d-flex align-center">
             {{ item.memo }}
-            <v-icon class="ml-2" color="darkPrimary2" small>mdi-note-edit</v-icon>
+            <v-icon class="ml-2" color="darkPrimary2" small @click.stop="showEditMemo(item)">mdi-note-edit</v-icon>
           </div>
         </template>
         <template v-slot:item.action="{}">
@@ -53,7 +53,7 @@
             <div class="d-flex align-center">
               <div class="pa-1 primary rounded-lg">{{ item.tag }}</div>
               <div class="mx-2">{{ item.memo }}</div>
-              <v-icon color="darkPrimary2" small>mdi-note-edit</v-icon>
+              <v-icon color="darkPrimary2" small @click.stop="showEditMemo(item)">mdi-note-edit</v-icon>
             </div>
           </v-col>
         </v-row>
@@ -102,6 +102,43 @@
         </div>
       </v-card>
     </v-dialog>
+
+    <!-- edit memo -->
+    <v-dialog v-model="memoDialogShow" width="100%" max-width="585">
+      <v-card class="pa-4">
+        <div class="d-flex justify-end">
+          <v-icon @click="memoDialogShow = false" small>mdi-close</v-icon>
+        </div>
+        <div class="py-3 px-5">
+          <div class="d-flex flex-column flex-md-row justify-space-between align-md-end align-start">
+            <div class="rem-28 font-weight-bold">編輯白名單備註</div>
+            <div class="rem-0 grey--text mb-2">審核帳號 {{ $store.state.userInfo.account }}</div>
+          </div>
+
+          <div class="memo-edit-block font-weight-bold">
+            <div class="rem-24 mb-5 mb-md-8">{{ currItem.name }}</div>
+            <div class="rem-4 rem-md-8 mb-3">{{ currItem.tag }}</div>
+            <div class="rem-4 rem-md-8 mb-3">{{ currItem.address }}</div>
+            <div class="rem-4 rem-md-8 mb-7 mb-md-8">{{ timestampToTime(currItem.create_time * 1000) }}</div>
+            <div class="rem-4 rem-md-8 mb-2">白名單備註</div>
+            <v-form ref="memoForm" lazy-validation>
+              <v-text-field
+                placeholder="Enter..."
+                color="darkPrimary1"
+                outlined
+                v-model="newMemo"
+                :rules="[dataRules, (v) => (v && v.length <= 8) || '字數超過限制']"
+              ></v-text-field>
+            </v-form>
+          </div>
+
+          <div class="d-flex justify-space-between mx-auto" style="max-width: 363px;">
+            <v-btn width="33%" outlined depressed color="darkPrimary1" @click="memoDialogShow = false">取消</v-btn>
+            <v-btn width="33%" depressed dark color="darkPrimary1" @click="updateMemo()">確認</v-btn>
+          </div>
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -143,6 +180,8 @@ export default {
       currItem: {},
       tagDialogShow: false,
       tag: '',
+      memoDialogShow: false,
+      newMemo: '',
     }
   },
   watch: {
@@ -173,6 +212,28 @@ export default {
       this.detailsShow = true
       this.currItem = item
     },
+    showEditMemo(item) {
+      this.currItem = item;
+      this.newMemo = this.currItem.memo
+      this.memoDialogShow = true;
+    },
+    async updateMemo() {
+      if (this.$refs.memoForm.validate()) {
+        let result = await this.$store.dispatch('updateWhitelistInfo', {
+          id: this.currItem.id,
+          memo: this.newMemo
+        })
+
+        if (result.status === 230) {
+          this.$toasted.show('更新成功')
+          this.memoDialogShow = false;
+          this.$refs.memoForm.reset()
+          this.$emit('getWhitelistList')
+        } else {
+          this.$toasted.error('更新失敗')
+        }
+      }
+    }
   },
   mounted() {
     this.tag = this.currTag
@@ -195,6 +256,12 @@ export default {
   h2 {
     padding-bottom: 12px;
     border-bottom: 2px solid var(--v-lightPrimary-base);
+  }
+}
+.memo-edit-block {
+  padding: 96px 0;
+  @include dai_vuetify_md {
+    padding: 56px 0;
   }
 }
 </style>

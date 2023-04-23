@@ -187,6 +187,14 @@ export default new Vuex.Store({
       })
       return result.data
     },
+    async updateWhitelistInfo({ state }, data){
+      let result = await Vue.axios.patch(`${state.backendUrl}${state.backendVersion}/whitelist/update`, data, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
     // async addWhitelistList({ state }, res){
     //   let result = await Vue.axios.post(`${state.backendUrl}/admin${state.backendVersion}/create_white_list`, res, {
     //     headers: {
