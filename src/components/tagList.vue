@@ -5,6 +5,7 @@
         class="mb-2"
         placeholder="Enter..."
         color="darkPrimary1"
+        background-color="white"
         outlined
         dense
         hide-details="auto"
