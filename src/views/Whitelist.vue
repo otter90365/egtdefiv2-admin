@@ -117,6 +117,21 @@
         <div class="px-7 py-2">
           <div class="rem-8 font-weight-bold mb-6 title-text text-center">篩選條件</div>
 
+          <!-- 白名單 -->
+          <v-card class="rounded-lg mb-6">
+            <v-card-title class="darkPrimary1 white--text py-0 font-weight-bold rem-2 d-flex justify-space-between align-center">
+              新增白名單
+              <v-icon color="white" @click="whitelistShow = !whitelistShow">mdi-plus</v-icon>
+            </v-card-title>
+            <v-card-text class="lightPrimary px-3 py-2" v-if="whitelistShow">
+              <addWhitelist
+                :tagList="tagList"
+                @getWhitelistList="mobileDrawer = false; getWhitelistList()"
+                @cancel="mobileDrawer = false"
+              ></addWhitelist>
+            </v-card-text>
+          </v-card>
+
           <!-- 分類 -->
           <v-card class="rounded-lg mb-6">
             <v-card-title class="darkPrimary1 white--text py-0 font-weight-bold rem-2 d-flex justify-space-between align-center">
@@ -164,6 +179,7 @@ export default {
       ],
       mobileDrawer: false,
       tagShow: true,
+      whitelistShow: true,
       tagMenuShow: false,
       addWhitelistDialogShow: false,
     }

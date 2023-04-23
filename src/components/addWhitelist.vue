@@ -3,6 +3,7 @@
     <div class="mb-2">白名單姓名</div>
     <v-text-field
       placeholder="Enter..."
+      background-color="white"
       color="darkPrimary1"
       outlined
       dense
@@ -13,6 +14,7 @@
     <div class="mb-2">白名單錢包地址</div>
     <v-text-field
       placeholder="Enter..."
+      background-color="white"
       color="darkPrimary1"
       outlined
       dense
@@ -42,6 +44,7 @@
     <v-text-field
       class="mb-md-10 mb-8"
       placeholder="Enter..."
+      background-color="white"
       color="darkPrimary1"
       outlined
       dense
@@ -73,7 +76,7 @@ export default {
       newWhitelist: {
         name: '',
         address: '',
-        tag: this.tagList[0].id,
+        tag: this.tagList.length ? this.tagList[0].id : 0,
         memo: '',
       },
       timer: null,
