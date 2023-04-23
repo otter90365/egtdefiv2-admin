@@ -37,12 +37,21 @@
 
     <template v-if="currList.length">
       <v-row
-        class="d-block d-md-none mobile-order py-3 px-2 mb-2 can-click"
-        v-for="item in currList"
+        class="d-block d-md-none mobile-whitelist py-3 px-2 mb-2 can-click"
+        v-for="(item, index) in currList"
         :key="item.id"
         @click="clickRow(item)"
       >
-        <v-row class="rem-0" align="center">
+        <div class="delete-block px-4 d-flex justify-space-between align-center can-click" @click.stop="currItem = item; deleteWhitelistDialogShow = true">
+          <v-icon color="white">mdi-trash-can</v-icon>
+          <v-icon color="white">mdi-trash-can</v-icon>
+        </div>
+        <v-row
+          class="rem-0 mobile-whitelist-content"
+          :class="{'show-right-delete': showRightDelete === index, 'show-left-delete': showLeftDelete === index}"
+          align="center"
+          @touchmove="moveMobileWhitelist($event, index)"
+        >
           <v-col cols="2" class="lightPrimary--text">#{{ item.id }}</v-col>
           <v-col cols="10">
             <div class="d-flex justify-space-between font-weight-bold">
@@ -230,6 +239,12 @@ export default {
       newMemo: '',
       deleteWhitelistDialogShow: false,
       deleteWhitelistConfirmShow: false,
+      lastTouch: {
+        x: 0,
+        index: null
+      },
+      showLeftDelete: null,
+      showRightDelete: null,
     }
   },
   watch: {
@@ -316,6 +331,22 @@ export default {
       }else{
         this.$toasted.error('請切換到幣安智能鏈')
       }
+    },
+    moveMobileWhitelist(event, index) {
+      const x = event.touches[0].clientX;
+      if (this.lastTouch.index != index) {
+        this.showLeftDelete = null
+        this.showRightDelete = null
+      }
+      if (x - this.lastTouch.x > 75) {
+        this.showRightDelete = null
+        this.showLeftDelete = index
+      } else if (x - this.lastTouch.x < -75) {
+        this.showRightDelete = index
+        this.showLeftDelete = null
+      }
+      this.lastTouch.x = x
+      this.lastTouch.index = index
     }
   },
   mounted() {
@@ -329,9 +360,32 @@ export default {
   th, td {
     border-bottom: 2px solid var(--v-lightPrimary-base) !important;
   }
-  .mobile-order {
+  .mobile-whitelist {
+    position: relative;
     box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
+    overflow: hidden;
+    .delete-block {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--v-warning-base);
+    }
+    .mobile-whitelist-content {
+      position: relative;
+      z-index: 3;
+      background: white;
+      border-radius: 10px;
+      transition: all 1s;
+      &.show-left-delete {
+        transform: translate(60px);
+      }
+      &.show-right-delete {
+        transform: translate(-60px);
+      }
+    }
   }
 }
 .detailed-info-card {
