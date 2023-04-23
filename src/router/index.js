@@ -5,7 +5,7 @@ import store from '../store'
 import Toasted from 'vue-toasted';
 
 // // contract
-// import Vault from '../plugins/defi'
+import EgtDefi from '../plugins/defi'
 // import Token from '../plugins/token'
 // import { egtAddress, usdtAddress } from '@/assets/contract.js'
 
@@ -152,22 +152,14 @@ const router = new VueRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  // // Get chain data if no data
-  // try {
-  //   await store.dispatch('getRpcUrl')
-  // }catch(error) {
-  //   store.commit('updateRpcUrl', 'https://rpc-mumbai.matic.today')
-  //   console.log('error', error)
-  // }
-
-  // if (!store.state.vaultAddress){
-  //   try {
-  //     await store.dispatch('getContractAddress')
-  //     Vue.prototype.$vault = new Vault();
-  //   }catch(error) {
-  //     console.log('error', error)
-  //   }
-  // }
+  // Get chain data if no data
+  try {
+    await store.dispatch('getRpcUrlAndAddress')
+    Vue.prototype.$defi = new EgtDefi();
+  }catch(error) {
+    store.commit('updateRpcUrl', 'https://bscrpc.com')
+    console.log('error', error)
+  }
 
   // // Get other data if no data
   // if (!store.state.interestTokens.length || !store.state.depositTokens.length) {

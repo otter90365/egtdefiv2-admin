@@ -15,10 +15,11 @@ export default new Vuex.Store({
     // locale: 'tw',
     // langs: ['tw'],
     nowWidth: 0,
-    // rpcUrl: '',
+    rpcUrl: '',
     backendUrl: 'https://defi-v2.api-absolute-uv.com',
     backendVersion: '/api/v1',
-    // vaultAddress: '', // cd
+    defiAddress: '',
+    tbtAddress: '',
     // version: 'staging',
     // isWhitelist: false,
     // isMember: false,
@@ -28,10 +29,10 @@ export default new Vuex.Store({
     //   isShow: false,
     //   type: ''
     // },
-    // loading: {
-    //   isShow: false,
-    //   text: ''
-    // },
+    loading: {
+      isShow: false,
+      text: ''
+    },
     tokenPairs: [
       'EGT/TBT',
       'EGT/USDT',
@@ -54,14 +55,14 @@ export default new Vuex.Store({
     },
   },
   mutations: {
-    // // chain data
-    // updateRpcUrl(state, rpcUrl){
-    //   state.rpcUrl = rpcUrl
-    // },
-    // updateContractAddress(state, contract){
-    //   state.vaultAddress = contract.cd
-    //   state.version = contract.version
-    // },
+    // chain data
+    updateRpcUrl(state, rpcUrl){
+      state.rpcUrl = rpcUrl
+    },
+    updateContractAddress(state, contract){
+      state.defiAddress = contract.usdt_v2
+      state.tbtAddress = contract.tbt_v2
+    },
     updateChainId(state, chainId){
       state.chainId = chainId
     },
@@ -93,9 +94,9 @@ export default new Vuex.Store({
     // updateDialog(state, data) {
     //   state.dialogShow = data
     // },
-    // updateLoading(state, loading) {
-    //   state.loading = loading
-    // },
+    updateLoading(state, loading) {
+      state.loading = loading
+    },
     // updateInterestTokens(state, tokens){
     //   state.interestTokens = tokens
     // },
@@ -113,25 +114,16 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    // // chain data
-    // async getRpcUrl({ state, commit }){
-    //   let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/rpc_url`)
-    //   if (result.data.data && result.data.data.length) {
-    //     if (result.data.data[0]) {
-    //       commit('updateRpcUrl', result.data.data[0])
-    //     }else {
-    //       commit('updateRpcUrl', state.version === 'staging' ? 'https://data-seed-prebsc-1-s1.binance.org:8545' : 'https://bsc.getblock.io/mainnet/15db4d71-9556-49be-a956-ae738babec27/')
-    //     }
-    //   } else {
-    //     commit('updateRpcUrl', state.version === 'staging' ? 'https://data-seed-prebsc-1-s1.binance.org:8545' : 'https://bsc.getblock.io/mainnet/15db4d71-9556-49be-a956-ae738babec27/')
-    //   }
-    // },
-    // async getContractAddress({ state, commit }){
-    //   let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/contract`)
-    //   if (result.data.data) {
-    //     commit('updateContractAddress', result.data.data)
-    //   }
-    // },
+    // chain data
+    async getRpcUrlAndAddress({ state, commit }){
+      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/url`)
+      if (result.data.status === 200) {
+        commit('updateRpcUrl', result.data.data.url)
+        commit('updateContractAddress', result.data.data)
+      } else {
+        commit('updateRpcUrl', 'https://bscrpc.com')
+      }
+    },
     // // app data
     // async getVaultTokenPair({ state, commit }){
     //   let interestTokens = []
@@ -181,6 +173,14 @@ export default new Vuex.Store({
     async getWhitelistList({ state }, data){
       const tag = data.tag ? `?tag=tag&key=${data.tag}` : ''
       let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/whitelist/list${tag}`, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
+    async addWhitelist({ state }, data){
+      let result = await Vue.axios.post(`${state.backendUrl}${state.backendVersion}/whitelist/create`, data, {
         headers: {
           authorization: `Berear ${state.token}`
         }

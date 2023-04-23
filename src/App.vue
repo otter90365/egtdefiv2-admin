@@ -64,13 +64,13 @@
       <router-view />
     </v-main>
 
-    <!--<loading :loadingShow="$store.state.loading.isShow" :content="$store.state.loading.text"></loading> -->
+    <loading :loadingShow="$store.state.loading.isShow" :content="$store.state.loading.text"></loading>
   </v-app>
 </template>
 
 <script>
 // import btn from '@/components/btn.vue';
-// import loading from '@/components/loading.vue'
+import loading from '@/components/loading.vue'
 import base from '@/mixin/base'
 export default {
   name: 'App',
@@ -108,7 +108,7 @@ export default {
   }),
   components:{
     // btn,
-    // loading
+    loading
   },
   watch: {
     isDrawer(newVal) {

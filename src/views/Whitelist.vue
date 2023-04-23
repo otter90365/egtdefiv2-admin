@@ -9,7 +9,7 @@
           <v-icon color="black">{{ $store.state.sidebarClose ? 'mdi-chevron-right' : 'mdi-chevron-left'}}</v-icon>
         </div>
         <h1 class="rem-md-24 rem-14 font-weight-bold mr-1">白名單管理</h1>
-        <v-btn color="darkPrimary1" depressed dark class="rounded-lg d-none d-md-block">新增白名單+</v-btn>
+        <v-btn color="darkPrimary1" depressed dark class="rounded-lg d-none d-md-block" @click="addWhitelistDialogShow = true">新增白名單+</v-btn>
       </div>
 
       <div class="d-flex align-center">
@@ -81,6 +81,27 @@
       ></whitelistTable>
     </section>
 
+    <!-- add whitelist dialog -->
+    <v-dialog v-model="addWhitelistDialogShow" :fullscreen="$store.state.nowWidth < 960" width="100%" max-width="585">
+      <v-card class="pa-4">
+        <div class="d-flex justify-end">
+          <v-icon class="ma-4 ma-md-0" @click="addWhitelistDialogShow = false">mdi-close</v-icon>
+        </div>
+        <div class="py-3 px-5">
+          <div class="d-flex flex-column flex-md-row justify-space-between align-md-end align-start mb-10">
+            <div class="rem-28 font-weight-bold">新增白名單備註</div>
+            <div class="rem-0 grey--text mb-2">審核帳號 {{ $store.state.userInfo.account }}</div>
+          </div>
+
+          <addWhitelist
+            :tagList="tagList"
+            @getWhitelistList="addWhitelistDialogShow = false; getWhitelistList()"
+            @cancel="addWhitelistDialogShow = false"
+          ></addWhitelist>
+        </div>
+      </v-card>
+    </v-dialog>
+
     <v-navigation-drawer
       v-model="mobileDrawer"
       fixed
@@ -122,6 +143,7 @@ import searchInput from '@/components/searchInput'
 import accountBlock from '@/components/accountBlock'
 import whitelistTable from '@/components/whitelistTable'
 import tagList from '@/components/tagList'
+import addWhitelist from '@/components/addWhitelist'
 export default {
   data() {
     return {
@@ -143,6 +165,7 @@ export default {
       mobileDrawer: false,
       tagShow: true,
       tagMenuShow: false,
+      addWhitelistDialogShow: false,
     }
   },
   components: {
@@ -150,7 +173,8 @@ export default {
     searchInput,
     accountBlock,
     whitelistTable,
-    tagList
+    tagList,
+    addWhitelist,
   },
   watch: {
     async currTag() {

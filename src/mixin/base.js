@@ -10,11 +10,11 @@ export default {
 //         (v) => /^[0-9]/.test(v) || 'Number Only',
 //         (v) => v > 0 || 'Cannot Be Negative',
 //       ],
-//       accountRules: [
-//         (v) => !!v || 'Required',
-//         (v) => /0x[\w]{40}/.test(v) || 'Please Enter Correct Address',
-//         (v) => v.length === 42 || 'Please Enter Correct Address',
-//       ],
+      accountRules: [
+        (v) => !!v || 'Required',
+        (v) => /0x[\w]{40}/.test(v) || 'Please Enter Correct Address',
+        (v) => v.length === 42 || 'Please Enter Correct Address',
+      ],
 //       voteRules: [
 //         (v) => v <= 300 || 'No More Than 300',
 //         (v) => v >= 10 || 'Must Higher Than 10',
@@ -211,9 +211,9 @@ export default {
 
       let isBsc
       // if (this.$store.state.version === 'staging') {
-        isBsc = chainId === '0x61' || chainId === 97
+        // isBsc = chainId === '0x61' || chainId === 97
       // } else {
-      //   isBsc = chainId === '0x38' || chainId === 56
+        isBsc = chainId === '0x38' || chainId === 56
       // }
       // let isPol = chainId === '0x89' || chainId === 137
       // let isPol = chainId === '0x13881' || chainId === 80001
