@@ -82,7 +82,7 @@
     </section>
 
     <!-- add whitelist dialog -->
-    <v-dialog v-model="addWhitelistDialogShow" :fullscreen="$store.state.nowWidth < 960" width="100%" max-width="585">
+    <v-dialog v-model="addWhitelistDialogShow" width="100%" max-width="585">
       <v-card class="pa-4">
         <div class="d-flex justify-end">
           <v-icon class="ma-4 ma-md-0" @click="addWhitelistDialogShow = false">mdi-close</v-icon>
