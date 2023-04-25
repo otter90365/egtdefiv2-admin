@@ -69,7 +69,6 @@
 </template>
 
 <script>
-// import btn from '@/components/btn.vue';
 import loading from '@/components/loading.vue'
 import base from '@/mixin/base'
 export default {
@@ -107,7 +106,6 @@ export default {
     ]
   }),
   components:{
-    // btn,
     loading
   },
   watch: {
@@ -119,9 +117,6 @@ export default {
     },
   },
   computed:{
-    shortAddress(){
-      return `${this.$store.state.account.slice(0, 6)}...${this.$store.state.account.slice(38)}`
-    },
     currPage() {
       let page = this.navList.find(item => this.$route.name === item.link)
       if (page) {
@@ -153,11 +148,6 @@ export default {
         this.$forceUpdate()
       }
     },
-    // changeLang(lang){
-    //   this.$store.commit('updateLang', lang)
-    //   this.$i18n.locale = lang
-    //   this.$router.push({ name: this.$route.name, params: {lang: lang, token: this.$route.params.token} });
-    // },
   },
   async mounted(){
     // console.log('==========default==========')
@@ -293,97 +283,7 @@ export default {
   --v-darkPrimary2-base: #0C2926 !important;
 }
 
-// .app-bar{
-//   background: linear-gradient(117.82deg, #535353 1.27%, #000000 74.01%);
-//   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-//   @include dai_vuetify_sm {
-//     margin-left: 0;
-//   }
-//   .no-padding-btn{
-//     .v-btn:not(.v-btn--round).v-size--default{
-//       @include dai_vuetify_sm{
-//         min-width: 40px;
-//         padding: 0 10px;
-//       }
-//     }
-//   }
-// }
-
-// .side-bar {
-//   background-color: var(--v-darkGrey-base) !important;
-//   z-index: 9;
-// }
-
-// #footer {
-//   min-height: 60px;
-//   border-radius: 6px;
-//   border: #F0CD8F 1px solid;
-//   width: 95%;
-//   margin: 0 auto 20px;
-//   img.footer-pointer {
-//     position: absolute;
-//     bottom: -1px;
-//   }
-// }
-
-// .v-input.grey--text {
-//   input, .v-icon {
-//     color: var(--v-grey-base) !important;
-//     caret-color: var(--v-grey-base) !important;
-//   }
-// }
-
-// // analyze
-// .analyze-details, .analyze-token, .analyze-index {
-//   @include dai_vuetify_sm_min {
-//     max-width: 420px;
-//     background: radial-gradient(188.38% 188.38% at 50% -88.38%, rgba(99, 99, 99, 0.8) 0%, rgba(71, 71, 71, 0.8) 40.12%, rgba(49, 49, 49, 0.8) 100%);
-//     border-radius: 11px;
-//     margin: 40px auto;
-//   }
-
-//   .analyze-card {
-//     background: #151515;
-//     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-//     backdrop-filter: blur(3px);
-//     border-radius: 5px;
-//   }
-
-//   .v-tab {
-//     min-width: 80px !important;
-//   }
-//   .v-tabs-items {
-//     background-color: transparent !important;
-//   }
-
-//   .date-select-wrap {
-//     .v-input__prepend-outer {
-//       margin-right: 0px;
-//       margin-top: 15px;
-//     }
-//     .v-input__icon {
-//       width: 18px;
-//       height: 18px;
-//       min-width: 18px;
-//       .v-icon {
-//         font-size: 18px;
-//         color: var(--v-lightPrimary2-base);
-//       }
-//     }
-//   }
-
-//   .analyze-table .row {
-//     border-bottom: #EBEBEB 1px solid !important;
-//   }
-// }
-
 // common style
-// .font-tauri {
-//   font-family: 'Tauri' !important;
-// }
-// .font-share-tech {
-//   font-family: 'Share Tech' !important;
-// }
 .pre-wrap {
   white-space: pre-wrap;
 }
@@ -399,15 +299,6 @@ export default {
 .h-100 {
   height: 100%;
 }
-// .bg-grey-radial-gradient {
-//   background: radial-gradient(86.09% 216.62% at 8.7% 11.02%, #636363 0%, #232324 100%);
-// }
-// .bg-primary-radial-gradient {
-//   background: radial-gradient(78.7% 198.02% at 8.7% 11.02%, #F0CD8F 0%, #C0914E 87.86%);
-// }
-// .border-radius-3{
-//   border-radius: 3px;
-// }
 .toasted.toasted-primary.error{
   background-color: var(--v-error-base) !important;
 }
