@@ -1,15 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store'
-// import app from '../main'
 import Toasted from 'vue-toasted';
 
-// // contract
+// contract
 import EgtDefi from '../plugins/defi'
-// import Token from '../plugins/token'
-// import { egtAddress, usdtAddress } from '@/assets/contract.js'
 
-// import jwt_decode from "jwt-decode";
 const cookies = require('vue-cookies')
 Vue.use(VueRouter)
 Vue.use(cookies);
@@ -72,34 +68,6 @@ const routes = [
       auth: 4
     },
   },
-  // // analyze
-  // {
-  //   path: '/analyze',
-  //   name: 'Analyze',
-  //   component: () => import('../views/Analyze/index.vue'),
-  //   meta: {
-  //     requiresAuth: true,
-  //     auth: 2
-  //   },
-  // },
-  // {
-  //   path: '/analyze/:interestToken/:depositToken',
-  //   name: 'Analyze-Token',
-  //   component: () => import('../views/Analyze/token.vue'),
-  //   meta: {
-  //     requiresAuth: true,
-  //     auth: 2
-  //   },
-  // },
-  // {
-  //   path: '/analyze/:interestToken/:depositToken/details',
-  //   name: 'Analyze-Token-Details',
-  //   component: () => import('../views/Analyze/details.vue'),
-  //   meta: {
-  //     requiresAuth: true,
-  //     auth: 2
-  //   },
-  // },
   {
     path: '/authority',
     name: 'Authority',
@@ -109,34 +77,6 @@ const routes = [
       auth: 1
     },
   },
-  // // rate setting
-  // {
-  //   path: '/rate-setting',
-  //   name: 'RateSetting',
-  //   component: () => import('../views/RateSetting/index.vue'),
-  //   meta: {
-  //     requiresAuth: true,
-  //     auth: 0
-  //   },
-  // },
-  // {
-  //   path: '/rate-setting/:interestToken/:depositToken',
-  //   name: 'RateSettingRecord',
-  //   component: () => import('../views/RateSetting/history.vue'),
-  //   meta: {
-  //     requiresAuth: true,
-  //     auth: 0
-  //   },
-  // },
-  // {
-  //   path: '/rate-setting/:interestToken/:depositToken/edit',
-  //   name: 'RateSettingEdit',
-  //   component: () => import('../views/RateSetting/edit.vue'),
-  //   meta: {
-  //     requiresAuth: true,
-  //     auth: 0
-  //   },
-  // },
   {
     path: '/no-auth',
     name: 'noAuth',
@@ -160,15 +100,6 @@ router.beforeEach(async (to, from, next) => {
     store.commit('updateRpcUrl', 'https://bscrpc.com')
     console.log('error', error)
   }
-
-  // // Get other data if no data
-  // if (!store.state.interestTokens.length || !store.state.depositTokens.length) {
-  //   try{
-  //     await store.dispatch('getVaultTokenPair')
-  //   }catch(error){
-  //     console.log('error', error)
-  //   }
-  // }
 
   // Get user info from cookies
   try{
@@ -225,10 +156,6 @@ router.beforeEach(async (to, from, next) => {
     // 權限不足
     } else if (!store.state.userInfo.permission.includes(to.matched[0].meta.auth)) {
       next({name: 'noAuth'});
-    // // 未註冊
-    // } else if (!store.state.isMember) {
-    //   if (from.name !== 'Home') next({ name: 'Home', params: {lang: from.params.lang} });
-    //   store.commit('updateDialog', {isShow: true, type: 'register'})
     } else {
       next(); // 往下繼續執行
     }
@@ -236,10 +163,5 @@ router.beforeEach(async (to, from, next) => {
     next(); // 往下繼續執行
   }
 });
-
-// router.afterEach(async (to) => {
-  
-// });
-
 
 export default router

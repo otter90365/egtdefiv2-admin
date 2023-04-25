@@ -11,9 +11,6 @@ export default new Vuex.Store({
     account: '',
     token: '',
     chainId: false,
-    // isEth: false,
-    // locale: 'tw',
-    // langs: ['tw'],
     nowWidth: 0,
     rpcUrl: '',
     backendUrl: 'https://defi-v2.api-absolute-uv.com',
@@ -21,14 +18,6 @@ export default new Vuex.Store({
     defiAddress: '',
     tbtAddress: '',
     // version: 'staging',
-    // isWhitelist: false,
-    // isMember: false,
-    // interestTokens: [],
-    // depositTokens: [],
-    // dialogShow: {
-    //   isShow: false,
-    //   type: ''
-    // },
     loading: {
       isShow: false,
       text: ''
@@ -66,9 +55,6 @@ export default new Vuex.Store({
     updateChainId(state, chainId){
       state.chainId = chainId
     },
-    // updateIsEth(state, isEth){
-    //   state.isEth = isEth
-    // },
     // user data
     updateAccount(state, account){
       state.account = account
@@ -84,25 +70,13 @@ export default new Vuex.Store({
 			state.account = ''
 			state.token = ''
     },
-    // // app data
-    // updateLang(state, lang){
-    //   state.locale = lang
-    // },
+    // app data
     updateNowWidth(state, nowWidth){
       state.nowWidth = nowWidth
     },
-    // updateDialog(state, data) {
-    //   state.dialogShow = data
-    // },
     updateLoading(state, loading) {
       state.loading = loading
     },
-    // updateInterestTokens(state, tokens){
-    //   state.interestTokens = tokens
-    // },
-    // updateDepositTokens(state, tokens){
-    //   state.depositTokens = tokens
-    // },
     updateEthPrice(state, ethPrice){
       state.ethPrice = ethPrice
     },
@@ -124,27 +98,6 @@ export default new Vuex.Store({
         commit('updateRpcUrl', 'https://bscrpc.com')
       }
     },
-    // // app data
-    // async getVaultTokenPair({ state, commit }){
-    //   let interestTokens = []
-    //   let depositTokens = []
-    //   let result
-    //   result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/token_list/interest`)
-    //   if (result.data.data.length) {
-    //     result.data.data.forEach(item => {
-    //       interestTokens.push({token: item.toLowerCase()})
-    //     })
-    //   }
-    //   result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/token_list/cd`)
-    //   if (result.data.data.length) {
-    //     result.data.data.forEach(item => {
-    //       depositTokens.push({token: item.toLowerCase()})
-    //     })
-    //   }
-
-    //   commit('updateInterestTokens', interestTokens)
-    //   commit('updateDepositTokens', depositTokens)
-    // },
     // user data
     async login({ state, commit }, res){
       let result = await Vue.axios.post(`${state.backendUrl}${state.backendVersion}/login`, res)
@@ -273,56 +226,6 @@ export default new Vuex.Store({
       })
       return result.data
     },
-    // // rate setting
-    // async getCurrRate({ state }){
-    //   let result = await Vue.axios.get(`${state.backendUrl}/admin${state.backendVersion}/month_percent`, {
-    //     headers: {
-    //       authorization: `Berear ${state.token}`
-    //     }
-    //   })
-    //   return result.data
-    // },
-    // async getRateHistory({ state }){
-    //   let result = await Vue.axios.get(`${state.backendUrl}/admin${state.backendVersion}/set_month_percent_history`, {
-    //     headers: {
-    //       authorization: `Berear ${state.token}`
-    //     }
-    //   })
-    //   return result.data
-    // },
-    // async setRate({ state }, data){
-    //   let result = await Vue.axios.post(`${state.backendUrl}/admin${state.backendVersion}/set_month_percent`, data, {
-    //     headers: {
-    //       authorization: `Berear ${state.token}`
-    //     }
-    //   })
-    //   return result.data
-    // },
-    // // analyze
-    // // async getTokenBalance({ state }){
-    // //   let result = await Vue.axios.get(`${state.backendUrl}/analyze${state.backendVersion}/home`, {
-    // //     headers: {
-    // //       authorization: `Berear ${state.token}`
-    // //     }
-    // //   })
-    // //   return result.data
-    // // },
-    // async getTokenDailyDetail({ state }, data){
-    //   let result = await Vue.axios.post(`${state.backendUrl}/analyze${state.backendVersion}/daily_token_detial`, data, {
-    //     headers: {
-    //       authorization: `Berear ${state.token}`
-    //     }
-    //   })
-    //   return result.data
-    // },
-    // async getInterestTokenDailyDetail({ state }, data){
-    //   let result = await Vue.axios.post(`${state.backendUrl}/analyze${state.backendVersion}/daily_token_interest_detial`, data, {
-    //     headers: {
-    //       authorization: `Berear ${state.token}`
-    //     }
-    //   })
-    //   return result.data
-    // },
     async getEthPrice({commit}){
       try {
         let result = await Vue.axios.get(`https://pro-api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&include_last_updated_at=true&x_cg_pro_api_key=CG-JC54SgmUabpyX94wxVDmLffX`)
@@ -331,10 +234,6 @@ export default new Vuex.Store({
         commit('updateEthPrice', 0)
       }
     },
-    // async getTokenPrice(_, data){
-    //   let result = await Vue.axios.get(`https://pro-api.coingecko.com/api/v3/simple/price?ids=${data.token}&vs_currencies=${data.currency}&include_last_updated_at=true&x_cg_pro_api_key=CG-JC54SgmUabpyX94wxVDmLffX`)
-    //   return result.data
-    // },
     async getLoaningOrder({state}, data){
       const lender = data.lender ? `&lender=${data.lender}` : ''
       const borrower = data.borrower ? `&borrower=${data.borrower}` : ''
