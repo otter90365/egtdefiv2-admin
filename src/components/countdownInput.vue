@@ -178,43 +178,45 @@ export default {
     timeInput
   },
   computed: {
+    todayTimeStart() {
+      return (Date.parse(new Date().toISOString().substr(0, 10))) / 1000 - 8 * 3600
+    },
     defaultOptions(){
-      const todayTimeStart = (Date.parse(new Date().toISOString().substr(0, 10))) / 1000 - 8 * 3600
       return [
         {
           text: '當天',
           type: 'end',
-          value: todayTimeStart + 24 * 3600 - 1
+          value: this.todayTimeStart + 24 * 3600 - 1
         },
         {
           text: '7天內',
           type: 'end',
-          value: todayTimeStart + 7 * 24 * 3600 - 1
+          value: this.todayTimeStart + 7 * 24 * 3600 - 1
         },
         {
           text: '30天內',
           type: 'end',
-          value: todayTimeStart + 30 * 24 * 3600 - 1
+          value: this.todayTimeStart + 30 * 24 * 3600 - 1
         },
         {
           text: '60天內',
           type: 'end',
-          value: todayTimeStart + 60 * 24 * 3600 - 1
+          value: this.todayTimeStart + 60 * 24 * 3600 - 1
         },
         {
           text: '90天內',
           type: 'end',
-          value: todayTimeStart + 90 * 24 * 3600 - 1
+          value: this.todayTimeStart + 90 * 24 * 3600 - 1
         },
         {
           text: '120天內',
           type: 'end',
-          value: todayTimeStart + 120 * 24 * 3600 - 1
+          value: this.todayTimeStart + 120 * 24 * 3600 - 1
         },
         {
           text: '120天以上',
           type: 'start',
-          value: todayTimeStart + 120 * 24 * 3600
+          value: this.todayTimeStart + 120 * 24 * 3600
         },
       ]
     },
@@ -247,7 +249,7 @@ export default {
         this.endTime = null
       } else if (item.type === 'end') {
         this.endTime = item.value
-        this.startTime = null
+        this.startTime = this.todayTimeStart
       } else {
         this.startTime = parseInt(item.value.split('-')[0])
         this.endTime = parseInt(item.value.split('-')[1])
