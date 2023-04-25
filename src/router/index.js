@@ -137,12 +137,12 @@ const routes = [
   //     auth: 0
   //   },
   // },
-  // {
-  //   path: '/no-auth',
-  //   name: 'noAuth',
-  //   component: () => import('../views/noAuth.vue'),
-  //   meta: { requiresAuth: false },
-  // },
+  {
+    path: '/no-auth',
+    name: 'noAuth',
+    component: () => import('../views/noAuth.vue'),
+    meta: { requiresAuth: false },
+  },
 ]
 
 const router = new VueRouter({
