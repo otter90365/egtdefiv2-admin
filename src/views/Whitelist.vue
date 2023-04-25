@@ -89,7 +89,7 @@
         </div>
         <div class="py-3 px-5">
           <div class="d-flex flex-column flex-md-row justify-space-between align-md-end align-start mb-10">
-            <div class="rem-28 font-weight-bold">新增白名單備註</div>
+            <div class="rem-28 font-weight-bold">新增白名單</div>
             <div class="rem-0 grey--text mb-2">審核帳號 {{ $store.state.userInfo.account }}</div>
           </div>
 
