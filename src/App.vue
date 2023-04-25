@@ -101,7 +101,7 @@ export default {
       },
       {
         text: '權限名單管理',
-        // link: 'authority',
+        link: 'Authority',
         img: 'icon-nav-authority'
       },
     ]
@@ -285,6 +285,12 @@ export default {
   --v-lightPrimary-base: #EAD876 !important;
   --v-darkPrimary1-base: #AA8D45 !important;
   --v-darkPrimary2-base: #CD7F32 !important;
+}
+.Authority {
+  --v-primary-base: #37B8A1 !important;
+  --v-lightPrimary-base: #C0E0DE !important;
+  --v-darkPrimary1-base: #0F7B7B !important;
+  --v-darkPrimary2-base: #0C2926 !important;
 }
 
 // .app-bar{
