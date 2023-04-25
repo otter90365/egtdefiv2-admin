@@ -230,31 +230,49 @@ export default new Vuex.Store({
       })
       return result.data
     },
-    // // admin list
-    // async getAdminList({ state }){
-    //   let result = await Vue.axios.get(`${state.backendUrl}/admin${state.backendVersion}/admin_list`, {
-    //     headers: {
-    //       authorization: `Berear ${state.token}`
-    //     }
-    //   })
-    //   return result.data
-    // },
-    // async addAdminList({ state }, res){
-    //   let result = await Vue.axios.post(`${state.backendUrl}/admin${state.backendVersion}/create_admin`, res, {
-    //     headers: {
-    //       authorization: `Berear ${state.token}`
-    //     }
-    //   })
-    //   return result.data
-    // },
-    // async deleteAdminList({ state }, res){
-    //   let result = await Vue.axios.post(`${state.backendUrl}/admin${state.backendVersion}/delete_admin`, res, {
-    //     headers: {
-    //       authorization: `Berear ${state.token}`
-    //     }
-    //   })
-    //   return result.data
-    // },
+    // admin list
+    async getAdminList({ state }, data){
+      const auth = data.auth ? `?tag=permission&key=${data.auth}` : ''
+      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/admin/list${auth}`, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
+    async getAuthorityList({ state }){
+      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/admin/tag`, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
+    async updateAdminAuth({ state }, data){
+      let result = await Vue.axios.patch(`${state.backendUrl}${state.backendVersion}/admin/update_permission`, data, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
+    async addAdmin({ state }, data){
+      let result = await Vue.axios.post(`${state.backendUrl}${state.backendVersion}/admin/create`, data, {
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
+    async deleteAdmin({ state }, data){
+      let result = await Vue.axios.delete(`${state.backendUrl}${state.backendVersion}/admin/delete`, {
+        data: data,
+        headers: {
+          authorization: `Berear ${state.token}`
+        }
+      })
+      return result.data
+    },
     // // rate setting
     // async getCurrRate({ state }){
     //   let result = await Vue.axios.get(`${state.backendUrl}/admin${state.backendVersion}/month_percent`, {

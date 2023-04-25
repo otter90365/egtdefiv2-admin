@@ -100,15 +100,15 @@ const routes = [
   //     auth: 2
   //   },
   // },
-  // {
-  //   path: '/authority',
-  //   name: 'Authority',
-  //   component: () => import('../views/Authority.vue'),
-  //   meta: {
-  //     requiresAuth: true,
-  //     auth: 3
-  //   },
-  // },
+  {
+    path: '/authority',
+    name: 'Authority',
+    component: () => import('../views/Authority.vue'),
+    meta: {
+      requiresAuth: true,
+      auth: 1
+    },
+  },
   // // rate setting
   // {
   //   path: '/rate-setting',

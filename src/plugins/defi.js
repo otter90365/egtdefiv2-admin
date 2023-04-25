@@ -19,19 +19,17 @@ export default class EgtDefi {
     let data = extraData.encodeABI()
     return this.sendTransaction(data)
   }
+  
+  async getIsAdmin(address) {
+    let result = await this.contract.methods.isController(address).call()
+    return result
+  }
 
-  // async setMonthPercent(month, rate){
-  //   rate = rate * 10 ** 18
-  //   const rateString = rate.toLocaleString('fullwide', {useGrouping:false})
-  //   let extraData = await this.contract.methods.setMonthPercent(month, rateString)
-  //   let data = extraData.encodeABI()
-  //   return this.sendTransaction(data)
-  // }
-
-  // async getRound() {
-  //   let result = await this.contract.methods.Round().call()
-  //   return result
-  // }
+  async setAdmin(address){
+    let extraData = await this.contract.methods.setController(address)
+    let data = extraData.encodeABI()
+    return this.sendTransaction(data)
+  }
 
   async sendTransaction(data){
     const transactionParameters = {
