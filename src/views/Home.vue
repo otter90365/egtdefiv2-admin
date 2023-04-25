@@ -8,7 +8,7 @@
 <script>
 export default {
   async created(){
-    // this.$router.push('/')
+    this.$router.push('/order/loaning')
   }
 }
 </script>
