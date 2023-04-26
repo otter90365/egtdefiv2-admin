@@ -57,7 +57,7 @@ export default {
     },
   },
   created() {
-    if (this.$store.state.token) {
+    if (this.$store.state.token && this.$store.state.account) {
       this.$router.push({name: 'Home'})
     }
   }
