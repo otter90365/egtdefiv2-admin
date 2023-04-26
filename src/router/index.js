@@ -21,8 +21,8 @@ const routes = [
     name: 'Home',
     component: () => import('../views/Home.vue'),
     meta: {
-      requiresAuth: true,
-      auth: 0
+      requiresAuth: false,
+      // auth: 0
     },
   },
   {
