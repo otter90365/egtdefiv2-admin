@@ -47,6 +47,7 @@
       </div>
 
       <orderTable
+        class="loaning-order"
         :itemPerPage="itemPerPage"
         :headers="headers"
         :orders="filterOrders"
@@ -84,16 +85,16 @@ export default {
       filterOrders: [],
       headers: [
         { text: '編號', value: 'id', align: 'center', sortable: false },
-        { text: '狀態', value: 'settle', align: 'center', sortable: false },
-        { text: '到期日/時間', value: 'settle_day', align: 'center', width: '130px', sortable: false },
-        { text: '倒數計時', value: 'countdown', align: 'center', width: '110px', sortable: false },
-        { text: '貸方', value: 'lender', align: 'center', sortable: false },
+        { text: '狀態', value: 'settle', align: 'center', width: '90px', sortable: false },
+        { text: '到期日/時間', value: 'settle_day', align: 'center', width: '150px', sortable: false },
+        { text: '倒數計時', value: 'countdown', align: 'center', width: '50px', sortable: false },
+        { text: '貸方', value: 'lender', align: 'center', width: '90px', sortable: false },
         { text: '貸方地址', value: 'lender_address', align: 'center', sortable: false },
         { text: '借款金額', value: 'want', align: 'center', sortable: false },
         { text: '利率', value: 'rate', align: 'center', sortable: false },
         { text: '抵押數量', value: 'amount', align: 'center', sortable: false },
         { text: '貸款成數', value: 'mortgageRate', align: 'center', sortable: false },
-        { text: '借方', value: 'borrower', align: 'center', sortable: false },
+        { text: '借方', value: 'borrower', align: 'center', width: '90px', sortable: false },
         { text: '借方地址', value: 'borrower_address', align: 'center', sortable: false },
       ],
       borrowerText: '',
@@ -195,3 +196,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.loaning-order {
+  th {
+    padding: 0 6px !important;
+  }
+}
+</style>

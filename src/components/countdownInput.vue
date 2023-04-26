@@ -6,7 +6,7 @@
         <inputBlock
           mode="select"
           placeholder="倒數計時"
-          width="130"
+          width="115"
           :selectItems="[]"
           :inputText="''"
           readonly
