@@ -10,14 +10,6 @@
         :item-class="(item) => item.settle === 2 || item.settle === 1 ? 'warning--text' : ''"
       >
         <!-- header -->
-        <template v-slot:header.status="{}">
-          <inputBlock
-            mode="select"
-            label="狀態"
-            :selectItems="['進緩衝', '貸款中']"
-            width="67"
-          ></inputBlock>
-        </template>
         <template v-slot:header.settle="{}">
           <inputBlock
             mode="select"
