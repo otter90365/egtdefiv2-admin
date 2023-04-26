@@ -12,7 +12,7 @@
           <span class="lightPrimary--text">#{{ item.id }}</span>
         </template>
         <template v-slot:item.permission="{item}">
-          <div class="d-flex align-center">
+          <div class="d-flex justify-center align-center">
             <div>
               <div v-for="auth in item.permission" :key="auth">
                 {{ authMap.get(auth) }}

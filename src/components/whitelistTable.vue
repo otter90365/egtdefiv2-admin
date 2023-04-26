@@ -10,7 +10,7 @@
       >
         <!-- header -->
         <template v-slot:header.tag="{}">
-          <div class="d-flex align-center">
+          <div class="d-flex justify-center align-center">
             分類
             <v-icon class="ml-1" color="darkPrimary2" small @click="tagDialogShow = true">mdi-note-edit</v-icon>
           </div>
@@ -24,7 +24,7 @@
           {{ timestampToTime(item.create_time * 1000) }}
         </template>
         <template v-slot:item.memo="{item}">
-          <div class="d-flex align-center">
+          <div class="d-flex justify-center align-center">
             {{ item.memo }}
             <v-icon class="ml-2" color="darkPrimary2" small @click.stop="showEditMemo(item)">mdi-note-edit</v-icon>
           </div>
