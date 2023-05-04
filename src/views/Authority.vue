@@ -58,7 +58,6 @@
           <inputBlock
             mode="select"
             style="margin: 0 10px; width: 75px;"
-            placeholder="幣值選項"
             width="75"
             :selectItems="$store.state.pageItems"
             :inputText.sync="itemPerPage"
