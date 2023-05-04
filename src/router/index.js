@@ -47,7 +47,7 @@ const routes = [
     component: () => import('../views/Order/Loaning.vue'),
     meta: {
       requiresAuth: true,
-      auth: 4
+      auth: 3
     },
   },
   {
@@ -56,7 +56,7 @@ const routes = [
     component: () => import('../views/Order/Pending.vue'),
     meta: {
       requiresAuth: true,
-      auth: 4
+      auth: 3
     },
   },
   {
@@ -65,7 +65,7 @@ const routes = [
     component: () => import('../views/Order/Close.vue'),
     meta: {
       requiresAuth: true,
-      auth: 4
+      auth: 3
     },
   },
   {
