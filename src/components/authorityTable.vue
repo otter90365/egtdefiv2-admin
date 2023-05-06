@@ -259,31 +259,35 @@ export default {
     async deleteContractAuth() {
       if (this.currItem.permission.includes(2)) {
         if (this.$store.state.chainId){
-          let isAdmin = await this.$defi.getIsAdmin(this.currItem.address)
-          if (!isAdmin) {
-            this.$toasted.error('該地址非白名單')
-            return;
-          }
-
-          let result = await this.$defi.setAdmin(this.currItem.address)
-          if (result.txHash){
-            this.$store.commit('updateLoading', {isShow: true, text: ''})
-            this.timer = window.setInterval(async () => {
-              isAdmin = await this.$defi.getIsAdmin(this.currItem.address)
-              if (!isAdmin) {
-                window.clearInterval(this.timer)
-                await this.deleteAdmin()
-                this.$store.commit('updateLoading', {isShow: false, text: ''})
-              }
-            }, 1000)
-          }else if (result.code === 4001){
-            this.$toasted.error('使用者拒絕連線')
-          }
+          await this.deleteWhitelistAdmin('usdt')
+          await this.deleteWhitelistAdmin('tbt')
         }else{
           this.$toasted.error('請切換到幣安智能鏈')
         }
       } else {
         this.deleteAdmin()
+      }
+    },
+    async deleteWhitelistAdmin(token) {
+      let isAdmin = await this[`$${token}`].getIsAdmin(this.currItem.address)
+      if (!isAdmin) {
+        this.$toasted.error(`該地址非${token}白名單管理者`)
+        return;
+      }
+
+      let result = await this[`$${token}`].setAdmin(this.currItem.address)
+      if (result.txHash){
+        this.$store.commit('updateLoading', {isShow: true, text: ''})
+        this.timer = window.setInterval(async () => {
+          isAdmin = await this[`$${token}`].getIsAdmin(this.currItem.address)
+          if (!isAdmin) {
+            window.clearInterval(this.timer)
+            await this.deleteAdmin()
+            this.$store.commit('updateLoading', {isShow: false, text: ''})
+          }
+        }, 1000)
+      }else if (result.code === 4001){
+        this.$toasted.error('使用者拒絕連線')
       }
     },
     // delete admin (only api)
@@ -319,13 +323,15 @@ export default {
       this.lastTouch.x = x
       this.lastTouch.index = index
     },
-    updateContractAuth(item, newAuthId) {
+    async updateContractAuth(item, newAuthId) {
       if (newAuthId === 2) {
         // set contract admin
         if (!item.permission.includes(newAuthId)) {
-          this.addContractAdmin(item, newAuthId)
+          await this.addContractAdmin(item, newAuthId, 'usdt', false)
+          await this.addContractAdmin(item, newAuthId, 'tbt', true)
         } else {
-          this.deleteContractAdmin(item, newAuthId)
+          await this.deleteContractAdmin(item, newAuthId, 'usdt', false)
+          await this.deleteContractAdmin(item, newAuthId, 'tbt', true)
         }
       } else {
         this.updateAuth(item, newAuthId)
@@ -347,22 +353,24 @@ export default {
         this.$toasted.error('更新權限失敗')
       }
     },
-    async addContractAdmin(item, newAuthId) {
+    async addContractAdmin(item, newAuthId, token, isUpdate) {
       if (this.$store.state.chainId){
-        let isAdmin = await this.$defi.getIsAdmin(item.address)
+        let isAdmin = await this[`$${token}`].getIsAdmin(item.address)
         if (isAdmin) {
-          this.$toasted.error('該地址已是白名單管理者')
+          this.$toasted.error(`該地址已是${token}白名單管理者`)
           return;
         }
 
-        let result = await this.$defi.setAdmin(item.address)
+        let result = await this[`$${token}`].setAdmin(item.address)
         if (result.txHash){
           this.$store.commit('updateLoading', {isShow: true, text: ''})
           this.timer = window.setInterval(async () => {
-            isAdmin = await this.$defi.getIsAdmin(item.address)
+            isAdmin = await this[`$${token}`].getIsAdmin(item.address)
             if (isAdmin) {
               window.clearInterval(this.timer)
-              await this.updateAuth(item, newAuthId)
+              if (isUpdate) {
+                await this.updateAuth(item, newAuthId)
+              }
               this.$store.commit('updateLoading', {isShow: false, text: ''})
             }
           }, 1000)
@@ -373,22 +381,24 @@ export default {
         this.$toasted.error('請切換到幣安智能鏈')
       }
     },
-    async deleteContractAdmin(item, newAuthId) {
+    async deleteContractAdmin(item, newAuthId, token, isUpdate) {
       if (this.$store.state.chainId){
-        let isAdmin = await this.$defi.getIsAdmin(item.address)
+        let isAdmin = await this[`$${token}`].getIsAdmin(item.address)
         if (!isAdmin) {
-          this.$toasted.error('該地址非白名單管理者')
+          this.$toasted.error(`該地址非${token}白名單管理者`)
           return;
         }
 
-        let result = await this.$defi.setAdmin(item.address)
+        let result = await this[`$${token}`].setAdmin(item.address)
         if (result.txHash){
           this.$store.commit('updateLoading', {isShow: true, text: ''})
           this.timer = window.setInterval(async () => {
-            isAdmin = await this.$defi.getIsAdmin(item.address)
+            isAdmin = await this[`$${token}`].getIsAdmin(item.address)
             if (!isAdmin) {
               window.clearInterval(this.timer)
-              await this.updateAuth(item, newAuthId)
+              if (isUpdate) {
+                await this.updateAuth(item, newAuthId)
+              }
               this.$store.commit('updateLoading', {isShow: false, text: ''})
             }
           }, 1000)

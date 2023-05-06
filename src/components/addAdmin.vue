@@ -87,26 +87,8 @@ export default {
         if (this.newAdmin.permission === 2) {
           // whitelist admin
           if (this.$store.state.chainId){
-            let isAdmin = await this.$defi.getIsAdmin(this.newAdmin.address)
-            if (isAdmin) {
-              this.$toasted.error('該地址已是白名單管理者')
-              return;
-            }
-
-            let result = await this.$defi.setAdmin(this.newAdmin.address)
-            if (result.txHash){
-              this.$store.commit('updateLoading', {isShow: true, text: ''})
-              this.timer = window.setInterval(async () => {
-                isAdmin = await this.$defi.getIsAdmin(this.newAdmin.address)
-                if (isAdmin) {
-                  window.clearInterval(this.timer)
-                  await this.addAdmin()
-                  this.$store.commit('updateLoading', {isShow: false, text: ''})
-                }
-              }, 1000)
-            }else if (result.code === 4001){
-              this.$toasted.error('使用者拒絕連線')
-            }
+            await this.addWhiteistAdmin('usdt')
+            await this.addWhiteistAdmin('tbt')
           }else{
             this.$toasted.error('請切換到幣安智能鏈')
           }
@@ -114,6 +96,28 @@ export default {
           // other admin
           this.addAdmin()
         }
+      }
+    },
+    async addWhiteistAdmin(token) {
+      let isAdmin = await this[`$${token}`].getIsAdmin(this.newAdmin.address)
+      if (isAdmin) {
+        this.$toasted.error(`該地址已是${token}白名單管理者`)
+        return;
+      }
+
+      let result = await this[`$${token}`].setAdmin(this.newAdmin.address)
+      if (result.txHash){
+        this.$store.commit('updateLoading', {isShow: true, text: ''})
+        this.timer = window.setInterval(async () => {
+          isAdmin = await this[`$${token}`].getIsAdmin(this.newAdmin.address)
+          if (isAdmin) {
+            window.clearInterval(this.timer)
+            await this.addAdmin()
+            this.$store.commit('updateLoading', {isShow: false, text: ''})
+          }
+        }, 1000)
+      }else if (result.code === 4001){
+        this.$toasted.error('使用者拒絕連線')
       }
     },
     async addAdmin() {
