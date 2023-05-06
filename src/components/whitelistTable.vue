@@ -269,6 +269,9 @@ export default {
     currList() {
       return this.list.slice(this.itemPerPage * (this.page - 1), this.itemPerPage * this.page)
     },
+    currToken() {
+      return this.$store.getters.basicToken.toLowerCase()
+    }
   },
   methods: {
     clickRow(item) {
@@ -299,17 +302,17 @@ export default {
     },
     async deleteWhitelist() {
       if (this.$store.state.chainId){
-        let isWhitelist = await this.$defi.getIsWhitelist(this.currItem.address)
+        let isWhitelist = await this[`$${this.currToken}`].getIsWhitelist(this.currItem.address)
         if (!isWhitelist) {
           this.$toasted.error('該地址非白名單')
           return;
         }
 
-        let result = await this.$defi.setWhitelist(this.currItem.address)
+        let result = await this[`$${this.currToken}`].setWhitelist(this.currItem.address)
         if (result.txHash){
           this.$store.commit('updateLoading', {isShow: true, text: ''})
           this.timer = window.setInterval(async () => {
-            isWhitelist = await this.$defi.getIsWhitelist(this.currItem.address)
+            isWhitelist = await this[`$${this.currToken}`].getIsWhitelist(this.currItem.address)
             if (!isWhitelist) {
               window.clearInterval(this.timer)
 

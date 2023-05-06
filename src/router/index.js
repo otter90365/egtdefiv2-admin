@@ -95,7 +95,8 @@ router.beforeEach(async (to, from, next) => {
   // Get chain data if no data
   try {
     await store.dispatch('getRpcUrlAndAddress')
-    Vue.prototype.$defi = new EgtDefi();
+    Vue.prototype.$usdt = new EgtDefi(store.state.usdtAddress);
+    Vue.prototype.$tbt = new EgtDefi(store.state.tbtAddress);
   }catch(error) {
     store.commit('updateRpcUrl', 'https://bscrpc.com')
     console.log('error', error)

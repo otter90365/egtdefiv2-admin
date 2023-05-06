@@ -82,21 +82,26 @@ export default {
       timer: null,
     }
   },
+  computed: {
+    currToken() {
+      return this.$store.getters.basicToken.toLowerCase()
+    }
+  },
   methods: {
     async addWhitelist() {
       if (this.$refs.addWhitelistForm.validate()) {
         if (this.$store.state.chainId){
-          let isWhitelist = await this.$defi.getIsWhitelist(this.newWhitelist.address)
+          let isWhitelist = await this[`$${this.currToken}`].getIsWhitelist(this.newWhitelist.address)
           if (isWhitelist) {
             this.$toasted.error('該地址已是白名單')
             return;
           }
 
-          let result = await this.$defi.setWhitelist(this.newWhitelist.address)
+          let result = await this[`$${this.currToken}`].setWhitelist(this.newWhitelist.address)
           if (result.txHash){
             this.$store.commit('updateLoading', {isShow: true, text: ''})
             this.timer = window.setInterval(async () => {
-              isWhitelist = await this.$defi.getIsWhitelist(this.newWhitelist.address)
+              isWhitelist = await this[`$${this.currToken}`].getIsWhitelist(this.newWhitelist.address)
               if (isWhitelist) {
                 window.clearInterval(this.timer)
 

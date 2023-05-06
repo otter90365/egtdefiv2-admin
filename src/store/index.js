@@ -15,7 +15,7 @@ export default new Vuex.Store({
     rpcUrl: '',
     backendUrl: 'https://defi-v2.api-absolute-uv.com',
     backendVersion: '/api/v1',
-    defiAddress: '',
+    usdtAddress: '',
     tbtAddress: '',
     // version: 'staging',
     loading: {
@@ -49,7 +49,7 @@ export default new Vuex.Store({
       state.rpcUrl = rpcUrl
     },
     updateContractAddress(state, contract){
-      state.defiAddress = contract.usdt_v2
+      state.usdtAddress = contract.usdt_v2
       state.tbtAddress = contract.tbt_v2
     },
     updateChainId(state, chainId){

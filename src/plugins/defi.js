@@ -4,9 +4,10 @@ import store from '../store'
 const Contract = require('web3-eth-contract');
 
 export default class EgtDefi {
-  constructor() {
+  constructor(address) {
     Contract.setProvider(store.state.rpcUrl);
-    this.contract = new Contract(ABI, store.state.defiAddress);
+    this.address = address
+    this.contract = new Contract(ABI, address);
   }
 
   async getIsWhitelist(address) {
@@ -33,7 +34,7 @@ export default class EgtDefi {
 
   async sendTransaction(data){
     const transactionParameters = {
-      to: store.state.defiAddress,
+      to: this.address,
       from: window.ethereum.selectedAddress,
       data: data,
     };

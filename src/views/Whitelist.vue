@@ -9,7 +9,8 @@
           <v-icon color="black">{{ $store.state.sidebarClose ? 'mdi-chevron-right' : 'mdi-chevron-left'}}</v-icon>
         </div>
         <h1 class="rem-md-24 rem-14 font-weight-bold mr-1">白名單管理</h1>
-        <v-btn color="darkPrimary1" depressed dark class="rounded-lg d-none d-md-block" @click="addWhitelistDialogShow = true">新增白名單+</v-btn>
+        <v-btn color="darkPrimary1" depressed dark class="rounded-lg d-none d-md-block mr-1" @click="addWhitelistDialogShow = true">新增白名單+</v-btn>
+        <tokenPairInput :isMobile="false"></tokenPairInput>
       </div>
 
       <div class="d-flex align-center">
@@ -67,6 +68,7 @@
           頁面
         </div>
         <v-spacer></v-spacer>
+        <tokenPairInput></tokenPairInput>
       </div>
 
       <whitelistTable
@@ -158,6 +160,7 @@ import accountBlock from '@/components/accountBlock'
 import whitelistTable from '@/components/whitelistTable'
 import tagList from '@/components/tagList'
 import addWhitelist from '@/components/addWhitelist'
+import tokenPairInput from '@/components/tokenPairInput'
 export default {
   data() {
     return {
@@ -190,6 +193,7 @@ export default {
     whitelistTable,
     tagList,
     addWhitelist,
+    tokenPairInput,
   },
   watch: {
     async currTag() {
