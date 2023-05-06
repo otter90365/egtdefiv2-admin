@@ -201,7 +201,10 @@ export default {
     },
     search(newVal){
       this.filterList = this.list.filter(item => item.name.includes(newVal) || item.address.includes(newVal))
-    }
+    },
+    async "$store.state.currTokenPair"() {
+      await this.getWhitelistList()
+    },
   },
   methods: {
     async getWhitelistList() {

@@ -123,16 +123,17 @@ export default new Vuex.Store({
       commit('updateUserInfo', result.data.data)
     },
     // whitelist
-    async getWhitelistList({ state }, data){
-      const tag = data.tag ? `?tag=tag&key=${data.tag}` : ''
-      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/whitelist/list${tag}`, {
+    async getWhitelistList({ state, getters }, data){
+      const tag = data.tag ? `&tag=tag&key=${data.tag}` : ''
+      let result = await Vue.axios.get(`${state.backendUrl}${state.backendVersion}/whitelist/list?contract_tag=${getters.basicToken.toLowerCase()}${tag}`, {
         headers: {
           authorization: `Berear ${state.token}`
         }
       })
       return result.data
     },
-    async addWhitelist({ state }, data){
+    async addWhitelist({ state, getters }, data){
+      data.contract_tag = getters.basicToken.toLowerCase()
       let result = await Vue.axios.post(`${state.backendUrl}${state.backendVersion}/whitelist/create`, data, {
         headers: {
           authorization: `Berear ${state.token}`
