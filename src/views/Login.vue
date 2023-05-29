@@ -36,7 +36,7 @@ export default {
           await this.connectMetamask()
           let result = await this.$store.dispatch('login', {
             account: this.account,
-            address: window.ethereum.selectedAddress
+            address: (window.ethereum.selectedAddress).toLowerCase()
           })
 
           if (result.status === 200) {
