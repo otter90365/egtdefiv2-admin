@@ -73,7 +73,7 @@
           {{ item.want }} {{ basicToken.toUpperCase() }}
         </template>
         <template v-slot:item.rate="{item}">
-          {{ item.rate * 100 }}%
+          {{ (item.rate * 100).toFixed(2) }}%
         </template>
         <template v-slot:item.amount="{item}">
           {{ item.amount }} {{ borrowToken.toUpperCase() }}
@@ -127,7 +127,7 @@
           </v-col>
           <v-col cols="4" class="pa-1">
             <div class="px-1 h-100" :class="item.settle === 2 || item.settle === 1 ? 'lightWarning warning--text' : 'lightPrimary'">
-              <div><span style="font-size: 8px" class="black--text">利率</span>  <span class="rem-2">{{ item.rate * 100 }}</span> <span style="font-size: 10px;">%</span></div>
+              <div><span style="font-size: 8px" class="black--text">利率</span>  <span class="rem-2">{{ (item.rate * 100).toFixed(2) }}</span> <span style="font-size: 10px;">%</span></div>
               <div><span style="font-size: 8px" class="black--text">貸款成數</span>  <span class="rem-2">{{ getMortgageRate(item) }}</span> <span style="font-size: 10px;">%</span></div>
             </div>
           </v-col>
@@ -184,7 +184,7 @@
           <div class="rem-2 break-all" :class="isWarningText">{{ currItem.borrower_address }}</div>
           <div>借款金額  <span :class="isWarningText">{{ currItem.want }} {{ basicToken.toUpperCase() }}</span></div>
           <div>抵押數量  <span :class="isWarningText">{{ currItem.amount }} {{ borrowToken.toUpperCase() }}</span></div>
-          <div>利率  <span :class="isWarningText">{{ currItem.rate * 100 }}%</span></div>
+          <div>利率  <span :class="isWarningText">{{ (currItem.rate * 100).toFixed(2) }}%</span></div>
           <div>貸款成數  <span :class="isWarningText">{{ getMortgageRate(currItem) }}%</span></div>
         </div>
 
