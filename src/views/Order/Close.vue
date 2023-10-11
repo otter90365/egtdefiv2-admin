@@ -139,6 +139,14 @@ export default {
             borrower_address: `${item.borrower_address.slice(0, 4)}...${item.borrower_address.slice(36)}  `,
           }
         })
+        let index = result.data.borrower.findIndex(item => item === '')
+        if (index !== -1) {
+          result.data.borrower.splice(index, 1)
+        }
+        index = result.data.lender.findIndex(item => item === '')
+        if (index !== -1) {
+          result.data.lender.splice(index, 1)
+        }
         this.borrowerItems = [null, ...result.data.borrower]
         this.lenderItems = [null, ...result.data.lender]
         this.settleItems = [null, {name: '違約', value: 2}, {name: '已還款', value: 5}]

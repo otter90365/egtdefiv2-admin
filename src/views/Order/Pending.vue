@@ -111,6 +111,10 @@ export default {
       })
       if (result.status === 231 && result.data) {
         this.orders = result.data.orders.map(item => ({pendingStatus: '未媒合', ...item}))
+        let index = result.data.borrower.findIndex(item => item === '')
+        if (index !== -1) {
+          result.data.borrower.splice(index, 1)
+        }
         this.borrowerItems = [null, ...result.data.borrower]
         this.filterOrders = this.orders.filter(item => item.borrower.includes(this.search))
       }
